@@ -1,0 +1,13 @@
+embed_env/
+venv/
+__pycache__/
+*.pyc
+.env
+data/
+*.pt
+*.pth
+*.bin
+*.npy
+*.faiss
+*.zip
+data/
