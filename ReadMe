@@ -1,4 +1,4 @@
-Research Paper Recommender
+# 📚 Research Paper Recommender
 
 A full-stack machine learning system that recommends research papers using semantic similarity and vector search.
 
@@ -17,6 +17,8 @@ Users can search for research topics and receive relevant papers based on semant
 
 ---
 
+## 🧠 Pipeline
+
 1. **Data Collection**
 
    * Fetch research papers from arXiv (`fetch_arxiv.py`)
@@ -31,134 +33,56 @@ Users can search for research topics and receive relevant papers based on semant
 
 4. **Indexing**
 
-   * Store embeddings using FAISS for fast search (`build_faiss_index.py`)
+   * Store embeddings using FAISS (`build_faiss_index.py`)
 
 5. **Search & Recommendation**
 
-   * Perform semantic search (`semantic_search.py`)
-   * Generate recommendations (`recommend_papers.py`)
+   * Semantic search (`semantic_search.py`)
+   * Recommendations (`recommend_papers.py`)
 
 6. **Backend API**
 
    * Serve results via API (`backend_api.py`)
 
-7. **Frontend**
-
-   * Interactive UI built with React (Vite)
-
 ---
+
+## 🛠️ Tech Stack
+
+### Backend
 
 * Python
 * FAISS
 * NumPy
 * Pandas
 
-
+### Frontend
 
 * React
 * Vite
 * JavaScript
-* CSS
-
-
-```
-Research-Paper-Recommender/
-│
-├── frontend/                # React frontend
-│
-├── backend_api.py          # API server
-├── semantic_search.py      # Semantic search logic
-├── recommend_papers.py     # Recommendation system
-├── generate_embeddings.py  # Embedding generation
-├── build_faiss_index.py    # FAISS index builder
-├── fetch_arxiv.py          # Data collection
-├── clean_dataset.py        # Data preprocessing
-│
-├── papers.csv              # Raw dataset
-├── clean_papers.csv        # Processed dataset
-│
-└── .gitignore
-```
 
 ---
 
+## ⚙️ Setup
+
 ```bash
-git clone https://github.com/your-username/Research-Paper-Recommender.git
+git clone https://github.com/quantumHamza2/Research-Paper-Recommender.git
 cd Research-Paper-Recommender
-```
-
----
-
-
-```bash
-python -m venv venv
-source venv/bin/activate  # Mac/Linux
-```
-
----
-
-
-
-```bash
 pip install -r requirements.txt
-```
-
----
-
-
-```bash
-python fetch_arxiv.py
-python clean_dataset.py
-python generate_embeddings.py
-python build_faiss_index.py
-```
-
----
-
-
-```bash
 python backend_api.py
 ```
 
 ---
 
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
----
-
+## 🔍 Features
 
 * Semantic search using embeddings
 * Fast similarity search with FAISS
 * Research topic discovery
-* Paper recommendation engine
-* Interactive frontend visualization
+* Interactive frontend
 
 ---
 
+## 👨‍💻 Author
 
-* Large files like embeddings and FAISS index are excluded from the repository.
-* Dataset may need to be downloaded or generated before running.
-
----
-
-
-* Add REST API endpoints for user queries
-* Improve ranking (recency, citations, diversity)
-* Deploy backend and frontend
-* Add authentication and user profiles
-* Enhance visualization of research graphs
-
----
-
-
-**Mohammad Hamza Khan**
-
----
-
-
-Give the repo a star and pretend you enjoyed setting up Git.
+Mohammad Hamza Khan
