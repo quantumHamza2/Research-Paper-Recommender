@@ -3,19 +3,12 @@ import pandas as pd
 import faiss
 from sentence_transformers import SentenceTransformer
 
-num_papers = 40261
-dimension = 384
-
-# load dataset
 df = pd.read_csv("clean_papers.csv")
 
-# load embeddings
-embeddings = np.memmap(
-    "paper_embeddings.npy",
-    dtype="float32",
-    mode="r",
-    shape=(num_papers, dimension)
-)
+embeddings = np.load("paper_embeddings.npy", mmap_mode="r")
+num_papers, dimension = embeddings.shape
+print(f"Loaded embeddings with shape: {embeddings.shape}")
+
 
 # load FAISS index
 index = faiss.read_index("paper_index.faiss")

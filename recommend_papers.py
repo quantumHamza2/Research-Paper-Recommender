@@ -5,16 +5,10 @@ import faiss
 # load dataset
 df = pd.read_csv("clean_papers.csv")
 
-# load embeddings
-num_papers = 40261
-dimension = 384
+embeddings = np.load("paper_embeddings.npy", mmap_mode="r")
+num_papers, dimension = embeddings.shape
+print(f"Loaded embeddings with shape: {embeddings.shape}")
 
-embeddings = np.memmap(
-    "paper_embeddings.npy",
-    dtype="float32",
-    mode="r",
-    shape=(num_papers, dimension)
-)
 # load FAISS index
 index = faiss.read_index("paper_index.faiss")
 

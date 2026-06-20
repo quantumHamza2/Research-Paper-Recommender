@@ -5,12 +5,10 @@ import hdbscan
 import faiss
 
 print("Loading embeddings...")
-embeddings = np.memmap(
-    "paper_embeddings.npy",
-    dtype="float32",
-    mode="r",
-    shape=(40000, 384)
-)
+embeddings = np.load("paper_embeddings.npy", mmap_mode="r")
+num_papers, dimension = embeddings.shape
+print(f"Loaded embeddings with shape: {embeddings.shape}")
+
 
 print("Building FAISS index for similarity...")
 

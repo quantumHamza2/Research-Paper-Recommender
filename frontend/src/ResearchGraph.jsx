@@ -1,221 +1,258 @@
 import { useState, useEffect, useRef } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 
-function ResearchGraph({ query }) {
-  const [hoverNode, setHoverNode] = useState(null);
+function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
-  const [selectedPaper, setSelectedPaper] = useState(null);
+  const [hoverNode, setHoverNode] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
   const fgRef = useRef();
+  const containerRef = useRef(null);
 
-  // ✅ FETCH GRAPH WHEN QUERY CHANGES
+  // Resize listener
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setDimensions({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height || 500,
+        });
+      }
+    });
+    resizeObserver.observe(containerRef.current);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Fetch graph data
   useEffect(() => {
     if (!query) return;
 
     setLoading(true);
-    setSelectedPaper(null);
-
     fetch(`http://localhost:8000/graph?query=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setGraphData({
           nodes: data.nodes,
-          links: data.edges
+          links: data.edges,
         });
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error("Error loading graph:", err))
       .finally(() => setLoading(false));
-
   }, [query]);
 
-  return (
-    <div style={{ position: "relative" }}>
+  // Handle selected node highlighting and zoom
+  useEffect(() => {
+    if (!fgRef.current || !graphData.nodes.length) return;
 
-      {/* LOADING */}
+    if (selectedPaperId !== null) {
+      const node = graphData.nodes.find((n) => n.id === selectedPaperId);
+      if (node) {
+        // Zoom and center on the selected node
+        fgRef.current.centerAt(node.x, node.y, 800);
+        fgRef.current.zoom(2.5, 800);
+
+        // Find neighbors
+        const neighbors = new Set();
+        graphData.links.forEach((link) => {
+          const s = typeof link.source === "object" ? link.source.id : link.source;
+          const t = typeof link.target === "object" ? link.target.id : link.target;
+          if (s === node.id) neighbors.add(t);
+          if (t === node.id) neighbors.add(s);
+        });
+        node.neighbors = neighbors;
+      }
+    }
+  }, [selectedPaperId, graphData]);
+
+  // Compute node neighbors on click
+  const handleNodeClick = (node) => {
+    onSelectPaper(node.id);
+  };
+
+  // Adjust D3 forces to slow down movement and settle nodes quickly
+  useEffect(() => {
+    if (!fgRef.current) return;
+    // Soften repulsion strength (default is -30)
+    fgRef.current.d3Force("charge").strength(-15);
+    // Increase distance to prevent overlapping
+    if (fgRef.current.d3Force("link")) {
+      fgRef.current.d3Force("link").distance(45);
+    }
+  }, [graphData]);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        minHeight: "550px",
+        background: "radial-gradient(circle at center, #0B132B, #020617)",
+        borderRadius: "16px",
+        border: "1px solid rgba(255, 255, 255, 0.08)",
+        overflow: "hidden",
+      }}
+    >
+      {/* LOADING SPINNER */}
       {loading && (
-        <div style={{
-          textAlign: "center",
-          marginTop: "10px",
-          fontSize: "16px",
-          opacity: 0.8
-        }}>
-          🔍 Searching...
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(2, 6, 23, 0.75)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10,
+          }}
+        >
+          <div className="spinner" style={{ marginBottom: "12px" }} />
+          <div style={{ color: "#38bdf8", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px" }}>
+            Querying FAISS database...
+          </div>
+          <div style={{ color: "#64748b", fontSize: "12px", marginTop: "4px" }}>
+            Running semantic search & MMR diversification
+          </div>
         </div>
       )}
 
-      {/* GRAPH */}
-      <ForceGraph2D
-        ref={fgRef}
-        graphData={graphData}
-        nodeLabel="title"
-        nodeRelSize={4}
-        nodeAutoColorBy="year"
+      {/* GRAPH CANVAS */}
+      {graphData.nodes.length > 0 ? (
+        <ForceGraph2D
+          ref={fgRef}
+          graphData={graphData}
+          width={dimensions.width}
+          height={dimensions.height}
+          nodeLabel="title"
+          
+          // Hover actions
+          onNodeHover={(node) => setHoverNode(node || null)}
+          onNodeClick={handleNodeClick}
 
-        onNodeHover={(node) => {
-          setHoverNode(node || null);
-        }}
+          // Custom node drawing
+          nodeCanvasObject={(node, ctx, globalScale) => {
+            const label = node.title;
+            const fontSize = 11 / globalScale;
+            ctx.font = `${fontSize}px sans-serif`;
 
-        onNodeClick={(node) => {
-          setSelectedPaper(node);
+            const isSelected = selectedPaperId === node.id;
+            const isNeighbor = selectedPaperId !== null && graphData.nodes.find(n => n.id === selectedPaperId)?.neighbors?.has(node.id);
 
-          const neighbors = new Set();
+            // Determine coloring
+            let fillStyle = `hsl(${node.cluster * 32}, 85%, 65%)`;
+            let radius = isSelected ? 8 : 4.5;
 
-          graphData.links.forEach(link => {
-            const source = typeof link.source === "object" ? link.source.id : link.source;
-            const target = typeof link.target === "object" ? link.target.id : link.target;
+            if (selectedPaperId !== null) {
+              if (isSelected) {
+                fillStyle = "#facc15"; // Selected gold
+              } else if (isNeighbor) {
+                fillStyle = "#22c55e"; // Neighbors green
+                radius = 5.5;
+              } else {
+                fillStyle = "rgba(30, 41, 59, 0.15)"; // Dim others
+              }
+            }
 
-            if (source === node.id) neighbors.add(target);
-            if (target === node.id) neighbors.add(source);
-          });
+            // Draw circle
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = fillStyle;
+            if (isSelected || isNeighbor) {
+              ctx.shadowColor = fillStyle;
+              ctx.shadowBlur = isSelected ? 12 : 6;
+            }
+            ctx.fill();
+            
+            // White border ring for highlights
+            if (isSelected || isNeighbor) {
+              ctx.strokeStyle = "#ffffff";
+              ctx.lineWidth = 1.5 / globalScale;
+              ctx.stroke();
+            }
+            ctx.restore();
 
-          node.neighbors = neighbors;
+            // Draw text labels if zoomed in
+            if (globalScale > 1.4) {
+              const textWidth = ctx.measureText(label).width;
+              const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // padding
 
-          setGraphData({ ...graphData });
+              ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+              ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - radius - bckgDimensions[1] - 2, bckgDimensions[0], bckgDimensions[1]);
 
-          // ZOOM
-          fgRef.current.centerAt(node.x, node.y, 800);
-          fgRef.current.zoom(2.5, 800);
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillStyle = isSelected ? "#facc15" : "#f8fafc";
+              ctx.fillText(label.slice(0, 30) + (label.length > 30 ? "..." : ""), node.x, node.y - radius - bckgDimensions[1] / 2 - 2);
+            }
+          }}
 
-          const related = graphData.nodes
-            .filter(n => n.id !== node.id)
-            .slice(0, 5)
-            .map(n => n.id);
+          // Custom link drawing
+          linkWidth={(link) => {
+            const s = typeof link.source === "object" ? link.source.id : link.source;
+            const t = typeof link.target === "object" ? link.target.id : link.target;
+            if (selectedPaperId === null) return 0.8;
+            return s === selectedPaperId || t === selectedPaperId ? 2.5 : 0.2;
+          }}
+          linkColor={(link) => {
+            const s = typeof link.source === "object" ? link.source.id : link.source;
+            const t = typeof link.target === "object" ? link.target.id : link.target;
+            if (selectedPaperId === null) return "rgba(100, 116, 139, 0.4)";
+            return s === selectedPaperId || t === selectedPaperId ? "#22c55e" : "rgba(30, 41, 59, 0.1)";
+          }}
+          d3VelocityDecay={0.65}
+        />
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            color: "#64748b",
+            fontSize: "15px",
+            padding: "20px",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontSize: "40px", marginBottom: "16px", filter: "grayscale(1)" }}>🗺️</div>
+          <div style={{ color: "#94a3b8", fontWeight: "600", fontSize: "16px" }}>
+            Graph Visualization Workspace
+          </div>
+          <div style={{ fontSize: "13px", marginTop: "6px", maxWidth: "400px" }}>
+            Enter a research topic in the search bar above to fetch semantic nodes and generate a force-directed similarity graph.
+          </div>
+        </div>
+      )}
 
-          graphData.links.forEach(link => {
-            const source = typeof link.source === "object" ? link.source.id : link.source;
-            const target = typeof link.target === "object" ? link.target.id : link.target;
-
-            if (source === node.id) related.push(target);
-            if (target === node.id) related.push(source);
-          });
-
-          node.related = [...new Set(related)].slice(0, 5);
-        }}
-
-        nodeCanvasObject={(node, ctx) => {
-          const isSelected = selectedPaper && node.id === selectedPaper.id;
-          const isNeighbor =
-            selectedPaper && selectedPaper.neighbors?.has(node.id);
-
-          if (!selectedPaper) {
-            ctx.fillStyle = "#60a5fa";
-          } else if (isSelected) {
-            ctx.fillStyle = "#facc15";
-          } else if (isNeighbor) {
-            ctx.fillStyle = "#22c55e";
-          } else {
-            ctx.fillStyle = "#1e293b";
-          }
-
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, 4, 0, 2 * Math.PI);
-          ctx.fill();
-        }}
-
-        linkWidth={(link) => {
-          if (!selectedPaper) return 0.5;
-
-          const source = typeof link.source === "object" ? link.source.id : link.source;
-          const target = typeof link.target === "object" ? link.target.id : link.target;
-
-          return source === selectedPaper.id || target === selectedPaper.id
-            ? 2
-            : 0.3;
-        }}
-
-        linkColor={(link) => {
-          if (!selectedPaper) return "#334155";
-
-          const source = typeof link.source === "object" ? link.source.id : link.source;
-          const target = typeof link.target === "object" ? link.target.id : link.target;
-
-          return source === selectedPaper.id || target === selectedPaper.id
-            ? "#22c55e"
-            : "#1e293b";
-        }}
-
-        width={window.innerWidth}
-        height={window.innerHeight - 140}
-      />
-
-      {/* HOVER CARD */}
+      {/* FLOATING HOVER CARD */}
       {hoverNode && (
-        <div style={{
-          position: "absolute",
-          left: "20px",
-          bottom: "20px",
-          width: "300px",
-          background: "rgba(15, 23, 42, 0.95)",
-          padding: "12px",
-          borderRadius: "10px",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0px 5px 15px rgba(0,0,0,0.5)"
-        }}>
-          <div style={{
-            fontSize: "13px",
-            fontWeight: "bold",
-            marginBottom: "6px",
-            color: "#e2e8f0"
-          }}>
+        <div
+          style={{
+            position: "absolute",
+            bottom: "16px",
+            left: "16px",
+            width: "280px",
+            background: "rgba(15, 23, 42, 0.95)",
+            backdropFilter: "blur(16px)",
+            padding: "14px",
+            borderRadius: "14px",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.6)",
+            pointerEvents: "none",
+          }}
+        >
+          <div style={{ fontSize: "11px", color: `hsl(${hoverNode.cluster * 32}, 85%, 65%)`, fontWeight: "bold", marginBottom: "4px" }}>
+            Cluster {hoverNode.cluster}
+          </div>
+          <div style={{ fontSize: "13px", fontWeight: "600", color: "#f8fafc", lineHeight: "1.4" }}>
             {hoverNode.title}
           </div>
-
-          <div style={{
-            fontSize: "12px",
-            color: "#94a3b8"
-          }}>
-            {hoverNode.abstract
-              ? hoverNode.abstract.slice(0, 120) + "..."
-              : "No abstract available"}
-          </div>
-        </div>
-      )}
-
-      {/* SIDE PANEL */}
-      {selectedPaper && (
-        <div style={{
-          position: "absolute",
-          right: "20px",
-          top: "90px",
-          width: "380px",
-          background: "linear-gradient(135deg, #1e293b, #0f172a)",
-          padding: "20px",
-          borderRadius: "14px",
-          boxShadow: "0px 10px 25px rgba(0,0,0,0.6)"
-        }}>
-          <h2 style={{ fontSize: "17px" }}>{selectedPaper.title}</h2>
-
-          <div style={{ marginBottom: "10px" }}>
-            {selectedPaper.year}
-          </div>
-
-          <a href={selectedPaper.pdf_url} target="_blank" rel="noopener noreferrer">
-            <button style={{
-              width: "100%",
-              padding: "12px",
-              background: "#22c55e",
-              border: "none",
-              borderRadius: "10px",
-              color: "white"
-            }}>
-              📄 Open Paper
-            </button>
-          </a>
-
-          <button
-            onClick={() => setSelectedPaper(null)}
-            style={{
-              marginTop: "10px",
-              width: "100%",
-              padding: "8px",
-              background: "#334155",
-              border: "none",
-              borderRadius: "6px",
-              color: "white"
-            }}
-          >
-            ✖ Close
-          </button>
         </div>
       )}
     </div>
