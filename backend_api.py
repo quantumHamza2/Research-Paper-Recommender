@@ -5,9 +5,9 @@ import os
 import threading
 import ast
 import requests
-from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi import FastAPI, BackgroundTasks, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List
 
 import numpy as np
@@ -23,7 +23,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -113,8 +113,7 @@ def build_sample_indices(num_samples=1000):
     df_full = pd.read_csv("clean_papers.csv")
     df_sample = df_full.head(num_samples).copy()
     
-    # Save the sampled df as clean_papers.csv to keep files consistent for sample mode
-    df_sample.to_csv("clean_papers.csv", index=False)
+    # Sample mode is memory-only: never truncate the corpus or replace full artifacts.
     df = df_sample
     
     # 2. Embeddings
@@ -122,15 +121,14 @@ def build_sample_indices(num_samples=1000):
     texts = (df["title"] + " " + df["abstract"]).fillna("").tolist()
     sample_embeddings = model.encode(texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True)
     sample_embeddings = np.array(sample_embeddings, dtype=np.float32)
-    np.save("paper_embeddings.npy", sample_embeddings)
     embeddings = sample_embeddings
     
     # 3. FAISS Index
     status_message = "Building sample FAISS index..."
+    faiss.normalize_L2(embeddings)
     d = embeddings.shape[1]
-    sample_index = faiss.IndexFlatL2(d)
+    sample_index = faiss.IndexFlatIP(d)
     sample_index.add(embeddings)
-    faiss.write_index(sample_index, "paper_index.faiss")
     index = sample_index
     
     # 4. UMAP & Clustering
@@ -144,25 +142,22 @@ def build_sample_indices(num_samples=1000):
     
     reducer = umap.UMAP(n_neighbors=15, min_dist=0.1, metric="cosine", random_state=42)
     coords = reducer.fit_transform(embeddings_norm)
-    np.save("paper_map.npy", coords)
     paper_map = coords
     
     clusterer = hdbscan.HDBSCAN(min_cluster_size=10, metric="euclidean")
     labels = clusterer.fit_predict(coords)
-    np.save("paper_clusters.npy", labels)
     paper_clusters = labels
     
     # Related Nearest Neighbors
     ip_index = faiss.IndexFlatIP(d)
     ip_index.add(embeddings_norm)
-    _, indices = ip_index.search(embeddings_norm, min(6, num_samples))
+    _, indices = ip_index.search(embeddings_norm, min(6, len(df)))
     
     related = []
     for i in range(len(indices)):
         related.append(indices[i][1:].tolist())
     
     related_arr = np.array(related, dtype=object)
-    np.save("paper_related.npy", related_arr)
     paper_related = related_arr
     
     compute_cluster_keywords()
@@ -195,12 +190,14 @@ def initialize_system():
                 df = pd.read_csv("clean_papers.csv")
                 
                 # Use robust np.load with mmap to handle varying sizes and skip header offsets
-                embeddings = np.load("paper_embeddings.npy", mmap_mode="r")
+                embeddings = np.array(np.load("paper_embeddings.npy", allow_pickle=False), dtype=np.float32)
+                faiss.normalize_L2(embeddings)
                 paper_map = np.load("paper_map.npy", mmap_mode="r")
                 paper_clusters = np.load("paper_clusters.npy")
                 paper_related = np.load("paper_related.npy", allow_pickle=True)
                 
-                index = faiss.read_index("paper_index.faiss")
+                index = faiss.IndexFlatIP(embeddings.shape[1])
+                index.add(embeddings)
                 
                 # Check dimensions consistency
                 num_papers = len(df)
@@ -254,7 +251,7 @@ def get_paper(paper_id: int):
     
     related_papers = []
     for r_idx in p_related:
-        if r_idx < len(df):
+        if 0 <= r_idx < len(df):
             related_papers.append({
                 "id": int(r_idx),
                 "title": df.iloc[r_idx]["title"]
@@ -274,7 +271,7 @@ def get_paper(paper_id: int):
 
 # -------- SEARCH --------
 @app.get("/search")
-def search(query: str, k: int = 10):
+def search(query: str = Query(..., min_length=1, max_length=1000), k: int = Query(10, ge=1, le=100)):
     if index is None or df is None:
         raise HTTPException(status_code=503, detail="System indexing or loading")
         
@@ -300,7 +297,7 @@ def search(query: str, k: int = 10):
 
 # -------- GRAPH WITH MMR DIVERSIFICATION --------
 @app.get("/graph")
-def graph(query: str, k: int = 40):
+def graph(query: str = Query(..., min_length=1, max_length=1000), k: int = Query(40, ge=1, le=100)):
     if index is None or df is None or embeddings is None:
         raise HTTPException(status_code=503, detail="System loading")
 
@@ -380,7 +377,7 @@ def graph(query: str, k: int = 40):
 
 # -------- MAP (LIGHTWEIGHT PAYLOAD WITH CATEGORIES) --------
 @app.get("/map")
-def get_research_map(limit: int = 5000):
+def get_research_map(limit: int = Query(5000, ge=1, le=10000)):
     if paper_map is None or df is None:
         raise HTTPException(status_code=503, detail="Map coordinates loading")
 
@@ -401,7 +398,7 @@ def get_research_map(limit: int = 5000):
 
 # -------- SYNTHESIS API --------
 class SynthesizeRequest(BaseModel):
-    paper_ids: List[int]
+    paper_ids: List[int] = Field(..., min_length=1, max_length=20)
     use_ollama: bool = False
     ollama_model: str = "llama3"
 
@@ -532,13 +529,14 @@ def run_full_indexing():
             status_message = f"2/5: Embedding papers ({end_idx}/{len(texts)})..."
             
         full_embeddings = np.concatenate(all_embs, axis=0).astype(np.float32)
+        faiss.normalize_L2(full_embeddings)
         np.save("paper_embeddings.npy", full_embeddings)
         indexing_progress = 0.5
         
         status_message = "3/5: Building full FAISS index..."
         print(status_message)
         d = full_embeddings.shape[1]
-        full_index = faiss.IndexFlatL2(d)
+        full_index = faiss.IndexFlatIP(d)
         full_index.add(full_embeddings)
         faiss.write_index(full_index, "paper_index.faiss")
         indexing_progress = 0.6
@@ -599,7 +597,12 @@ def run_full_indexing():
 
 @app.post("/rebuild_index")
 def rebuild_index(background_tasks: BackgroundTasks):
-    if system_status == "indexing":
-        return {"message": "Indexing is already running"}
+    global system_status
+    if os.getenv("ENABLE_INDEX_REBUILD") != "1":
+        raise HTTPException(403, "Index rebuild is disabled. Enable only on a trusted local instance.")
+    with LOCK:
+        if system_status not in ("ready", "sample_mode"):
+            raise HTTPException(409, "System is not ready to rebuild")
+        system_status = "indexing"
     background_tasks.add_task(run_full_indexing)
     return {"message": "Rebuilding index started in background"}
