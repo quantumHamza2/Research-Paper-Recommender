@@ -25,6 +25,36 @@ class ApiContractTests(unittest.TestCase):
     def test_synthesis_is_bounded(self):
         self.assertEqual(self.client.post('/synthesize',json={'paper_ids':list(range(21))}).status_code,422)
 
+class SynthesisSelectionTests(unittest.TestCase):
+    def setUp(self):
+        import pandas as pd
+        self.client = TestClient(backend_api.app)
+        self.papers = pd.DataFrame([
+            {'title': 'Retrieval study', 'abstract': 'Semantic retrieval improves research discovery.', 'year': 2025},
+            {'title': 'Ranking study', 'abstract': 'Ranking research papers improves search quality.', 'year': 2026},
+        ])
+
+    def test_repeated_selection_matches_single_selection(self):
+        with patch.object(backend_api, 'df', self.papers):
+            single = self.client.post('/synthesize', json={'paper_ids': [0]})
+            repeated = self.client.post('/synthesize', json={'paper_ids': [0, 0]})
+        self.assertEqual(single.status_code, 200)
+        self.assertIn('covers 1 research papers', single.json()['synthesis'])
+        self.assertEqual(repeated.json(), single.json())
+
+    def test_ollama_receives_unique_papers_in_selection_order(self):
+        with patch.object(backend_api, 'df', self.papers), patch.object(backend_api.requests, 'post') as generate:
+            generate.return_value.status_code = 200
+            generate.return_value.json.return_value = {'response': 'A review'}
+            response = self.client.post('/synthesize', json={'paper_ids': [1, 0, 1], 'use_ollama': True})
+        self.assertEqual(response.json(), {'synthesis': 'A review'})
+        generate.assert_called_once()
+        prompt = generate.call_args.kwargs['json']['prompt']
+        self.assertEqual(prompt.count('Ranking study'), 1)
+        self.assertEqual(prompt.count('Retrieval study'), 1)
+        self.assertLess(prompt.index('Ranking study'), prompt.index('Retrieval study'))
+        self.assertNotIn('Paper 3:', prompt)
+
 class SamplePreservationTests(unittest.TestCase):
     def test_sample_preserves_full_dataset_and_artifacts(self):
         import os

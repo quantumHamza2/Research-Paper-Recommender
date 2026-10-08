@@ -408,7 +408,9 @@ def synthesize(req: SynthesizeRequest):
         raise HTTPException(status_code=503, detail="System initializing")
         
     selected_papers = []
-    for p_id in req.paper_ids:
+    # Repeated IDs must not inflate paper counts or create self-comparisons.
+    # Preserve the user's first-selection order for both synthesis paths.
+    for p_id in dict.fromkeys(req.paper_ids):
         if 0 <= p_id < len(df):
             selected_papers.append(df.iloc[p_id])
             
