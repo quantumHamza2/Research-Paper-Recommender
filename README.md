@@ -69,7 +69,7 @@ Users can search for research topics and receive relevant papers based on semant
 git clone https://github.com/quantumHamza2/Research-Paper-Recommender.git
 cd Research-Paper-Recommender
 pip install -r requirements.txt
-python backend_api.py
+uvicorn backend_api:app --host 127.0.0.1 --port 8000
 ```
 
 ---
@@ -86,3 +86,16 @@ python backend_api.py
 ## 👨‍💻 Author
 
 Mohammad Hamza Khan
+
+## Frontend and demo behavior
+
+In another terminal: `cd frontend && npm ci && npm run dev`.
+Start the API from the repository root so it can find the CSV files. First startup downloads `all-MiniLM-L6-v2` and builds a 1,000-paper sample if full artifacts are missing. Allow time for this step and check `/` for readiness. Sample mode stays in memory and preserves the full CSV and saved indexes. Retrieval normalizes both document and query embeddings and uses cosine similarity (FAISS inner product).
+
+The optional Ollama synthesis needs a local Ollama server and the requested model. The default synthesizer extracts keywords/sentences; it is not an LLM. No retrieval-quality benchmark has been established yet.
+
+`/rebuild_index` is disabled by default. Set `ENABLE_INDEX_REBUILD=1` only for a trusted local instance; it is an expensive operation that rewrites generated full-index artifacts. Do not expose that instance publicly. Back up full artifacts before rebuilding. Only load locally generated, trusted NumPy neighbor artifacts (the existing format uses pickle).
+
+## Checks
+
+Run `python -m unittest discover -s tests` with FastAPI, httpx, requests, NumPy, pandas and scikit-learn installed. Tests use stand-ins for the encoder, FAISS and clustering to check request limits and sample-data preservation without downloading models. Full retrieval/model integration is not covered by these checks.
