@@ -252,7 +252,7 @@ function App() {
   const renderFormattedText = (text) => {
     return text.split("\n").map((line, idx) => {
       line = line.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "");
-      let formatted = line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      let formatted = line.replace(/^[*\-]\s+/, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       // Bold **text**
       formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
       formatted = formatted.replace(/\*([^*]+)\*/g, "<em>$1</em>");
