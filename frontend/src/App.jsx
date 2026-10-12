@@ -8,6 +8,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [searchError, setSearchError] = useState("");
   
   // Bookmarks & Categories states
   const [bookmarks, setBookmarks] = useState(() => {
@@ -30,6 +31,18 @@ function App() {
   const [synthesisText, setSynthesisText] = useState("");
   const [showSynthesisModal, setShowSynthesisModal] = useState(false);
   const [useOllama, setUseOllama] = useState(false);
+  const [ollamaModels, setOllamaModels] = useState([]);
+  const [ollamaModel, setOllamaModel] = useState("");
+  const [synthesisMode, setSynthesisMode] = useState("extractive");
+  const [synthesisWarning, setSynthesisWarning] = useState("");
+  const [synthesisSources, setSynthesisSources] = useState([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/synthesis-status")
+      .then(res => res.json())
+      .then(data => { setOllamaModels(data.models || []); setOllamaModel(data.default_model || ""); })
+      .catch(() => {});
+  }, []);
 
   const [systemStatus, setSystemStatus] = useState({
     status: "initializing",
@@ -102,13 +115,18 @@ function App() {
       return updated;
     });
 
+    setSearchError("");
     fetch(`http://127.0.0.1:8000/search?query=${encodeURIComponent(searchQuery)}`)
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Search unavailable. Please wait for the dataset to load.");
+        return data;
+      })
       .then(data => {
-        setSearchResults(data.results);
+        setSearchResults(data.results || []);
         setActiveTab("search");
       })
-      .catch(err => console.error("Search failed:", err));
+      .catch(err => { setSearchResults([]); setSearchError(err.message); });
   };
 
   // Rebuild Index trigger
@@ -150,14 +168,17 @@ function App() {
   };
 
   // Trigger synthesis request
-  const handleSynthesize = () => {
+  const handleSynthesize = (requestedLLM = useOllama) => {
     if (checkedSynthesisIds.length === 0) {
       alert("Please select at least one paper using the checkboxes in bookmarks or search results.");
       return;
     }
 
     setSynthesisLoading(true);
-    setSynthesisText("Summarizing content and running TF-IDF alignments...");
+    setSynthesisText("");
+    setSynthesisWarning("");
+    setSynthesisSources([]);
+    setSynthesisMode(requestedLLM ? "llm" : "extractive");
     setShowSynthesisModal(true);
 
     fetch("http://127.0.0.1:8000/synthesize", {
@@ -165,13 +186,20 @@ function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         paper_ids: checkedSynthesisIds,
-        use_ollama: useOllama,
-        ollama_model: "llama3"
+        use_ollama: requestedLLM,
+        ollama_model: ollamaModel || "qwen2.5:1.5b"
       })
     })
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Unable to compare these papers.");
+        return data;
+      })
       .then(data => {
+        setSynthesisMode(data.mode || "extractive");
+        setSynthesisWarning(data.warning || "");
         setSynthesisText(data.synthesis);
+        setSynthesisSources(data.sources || []);
       })
       .catch(err => {
         setSynthesisText("Error compiling synthesis report: " + err);
@@ -313,11 +341,12 @@ function App() {
               {systemStatus.status === "ready" ? `Database Ready (${systemStatus.papers_count.toLocaleString()} papers)`
                 : systemStatus.status === "sample_mode" ? `Sample Mode (${systemStatus.papers_count} papers)`
                 : systemStatus.status === "indexing" ? `Building Index (${Math.round(systemStatus.indexing_progress * 100)}%)`
+                : systemStatus.status === "initializing" ? "Preparing dataset…"
                 : "Backend Offline"}
             </span>
           </div>
 
-          {systemStatus.status === "sample_mode" && (
+          {systemStatus.status === "sample_mode" && systemStatus.rebuild_enabled && (
             <button
               onClick={handleRebuildIndex}
               className="glow-button"
@@ -451,6 +480,7 @@ function App() {
                 </div>
               </div>
 
+              {searchError && <p role="alert" style={{color: "#fca5a5"}}>{searchError}</p>}
               {/* SEARCH RESULTS LIST */}
               {searchResults.length > 0 ? (
                 <div className="card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -497,7 +527,7 @@ function App() {
                   </div>
                   {checkedSynthesisIds.length > 0 && (
                     <button
-                      onClick={handleSynthesize}
+                      onClick={() => handleSynthesize()}
                       style={{
                         padding: "10px",
                         background: "#8b5cf6",
@@ -543,7 +573,7 @@ function App() {
                   📥 Export BibTeX
                 </button>
                 <button
-                  onClick={handleSynthesize}
+                  onClick={() => handleSynthesize()}
                   disabled={checkedSynthesisIds.length === 0}
                   style={{
                     flex: 1,
@@ -896,7 +926,9 @@ function App() {
 
           {/* WORKSPACE GRAPH OR CANVAS */}
           <div style={{ flex: 1, position: "relative" }}>
-            {view === "map" ? (
+            {!["ready", "sample_mode"].includes(systemStatus.status) ? (
+              <p role="status" style={{padding: "24px", color: "#cbd5e1"}}>{systemStatus.message}</p>
+            ) : view === "map" ? (
               <ResearchMap
                 onSelectPaper={setSelectedPaperId}
                 selectedPaperId={selectedPaperId}
@@ -950,10 +982,10 @@ function App() {
             }}>
               <div>
                 <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0, color: "#a78bfa" }}>
-                  🧪 Auto Literature Synthesizer
+                  🧪 Abstract Comparison
                 </h3>
                 <p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-                  Synthesizing abstracts via Semantic Alignment
+                  {synthesisMode === "llm" ? "Local LLM draft · verify claims against the abstracts" : "Extractive comparison · keywords and sentences, no LLM"}
                 </p>
               </div>
 
@@ -963,17 +995,23 @@ function App() {
                   <input
                     type="checkbox"
                     checked={useOllama}
+                    disabled={synthesisLoading || ollamaModels.length === 0}
                     onChange={(e) => {
-                      setUseOllama(e.target.checked);
-                      // Trigger rebuild if checked status changes
-                      setTimeout(handleSynthesize, 100);
+                      const enabled = e.target.checked;
+                      setUseOllama(enabled);
+                      handleSynthesize(enabled);
                     }}
                     style={{ cursor: "pointer" }}
                   />
-                  Use Local Ollama LLM
+                  {ollamaModels.length ? "Use local LLM" : "Local LLM unavailable — restart it and refresh"}
                 </label>
+                {ollamaModels.length > 0 && <select aria-label="Local model" value={ollamaModel}
+                  disabled={synthesisLoading || useOllama} onChange={e => setOllamaModel(e.target.value)}>
+                  {ollamaModels.map(name => <option key={name} value={name}>{name}</option>)}
+                </select>}
               </div>
             </div>
+            {synthesisWarning && <p role="alert" style={{padding: "0 24px", color: "#fbbf24"}}>{synthesisWarning}</p>}
 
             {/* Modal Content */}
             <div style={{
@@ -988,11 +1026,19 @@ function App() {
               {synthesisLoading ? (
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", gap: "12px" }}>
                   <div className="spinner" />
-                  <span style={{ color: "#a78bfa", fontWeight: "600" }}>Running TF-IDF extraction...</span>
+                  <span style={{ color: "#a78bfa", fontWeight: "600" }}>{synthesisMode === "llm" ? "Generating locally — this may take up to two minutes..." : "Extracting keywords and sentences..."}</span>
                 </div>
               ) : (
                 <div style={{ animation: "fadeIn 0.2s ease-out" }}>
                   {renderFormattedText(synthesisText)}
+                  {synthesisSources.length > 0 && <section aria-label="Source abstracts">
+                    <h3>Source abstracts</h3>
+                    <ul>{synthesisSources.map(source => <li key={source.label}>
+                      [{source.label}] {source.url.startsWith("https://")
+                        ? <a href={source.url} target="_blank" rel="noreferrer" style={{color: "#93c5fd"}}>{source.title}</a>
+                        : source.title}
+                    </li>)}</ul>
+                  </section>}
                 </div>
               )}
             </div>

@@ -47,13 +47,46 @@ class SynthesisSelectionTests(unittest.TestCase):
             generate.return_value.status_code = 200
             generate.return_value.json.return_value = {'response': 'A review'}
             response = self.client.post('/synthesize', json={'paper_ids': [1, 0, 1], 'use_ollama': True})
-        self.assertEqual(response.json(), {'synthesis': 'A review'})
+        self.assertEqual(response.json()['synthesis'], 'A review')
+        self.assertEqual(response.json()['mode'], 'llm')
+        self.assertEqual([p['label'] for p in response.json()['sources']], ['P1', 'P2'])
         generate.assert_called_once()
         prompt = generate.call_args.kwargs['json']['prompt']
         self.assertEqual(prompt.count('Ranking study'), 1)
         self.assertEqual(prompt.count('Retrieval study'), 1)
         self.assertLess(prompt.index('Ranking study'), prompt.index('Retrieval study'))
-        self.assertNotIn('Paper 3:', prompt)
+        self.assertNotIn('[P3]', prompt)
+
+    def test_failed_llm_returns_real_extractive_fallback(self):
+        failures = [backend_api.requests.Timeout('slow'), backend_api.requests.ConnectionError('offline')]
+        for failure in failures:
+            with self.subTest(failure=failure), patch.object(backend_api, 'df', self.papers), patch.object(backend_api.requests, 'post', side_effect=failure):
+                response = self.client.post('/synthesize', json={'paper_ids': [0, 1], 'use_ollama': True})
+                self.assertEqual(response.status_code, 200)
+                data = response.json()
+                self.assertEqual(data['mode'], 'extractive')
+                self.assertIn('no LLM output', data['warning'])
+                self.assertIn('Retrieval study', data['synthesis'])
+                self.assertEqual(len(data['sources']), 2)
+
+    def test_empty_llm_output_falls_back(self):
+        with patch.object(backend_api, 'df', self.papers), patch.object(backend_api.requests, 'post') as generate:
+            generate.return_value.json.return_value = {'response': '  '}
+            data = self.client.post('/synthesize', json={'paper_ids': [0], 'use_ollama': True}).json()
+        self.assertEqual(data['mode'], 'extractive')
+        self.assertIsNotNone(data['warning'])
+
+class ModelDiscoveryTests(unittest.TestCase):
+    def test_installed_small_model_preferred(self):
+        with patch.object(backend_api.requests, 'get') as tags:
+            tags.return_value.json.return_value = {'models': [{'name': 'qwen3:8b'}, {'name': 'qwen2.5:1.5b'}]}
+            data = TestClient(backend_api.app).get('/synthesis-status').json()
+        self.assertEqual(data['default_model'], 'qwen2.5:1.5b')
+
+    def test_offline_ollama_does_not_prevent_extractive_mode(self):
+        with patch.object(backend_api.requests, 'get', side_effect=backend_api.requests.ConnectionError()):
+            data = TestClient(backend_api.app).get('/synthesis-status').json()
+        self.assertEqual(data, {'models': [], 'default_model': None})
 
 class SamplePreservationTests(unittest.TestCase):
     def test_sample_preserves_full_dataset_and_artifacts(self):
