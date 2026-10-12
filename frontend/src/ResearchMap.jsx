@@ -112,13 +112,13 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
       const isCategoryMatch = selectedCategories.length === 0 ||
         (node.categories && node.categories.some(cat => selectedCategories.includes(cat)));
 
-      let radius = 2.5;
+      let radius = 3.2;
       if (isSelected) radius = 8;
       else if (isHovered) radius = 6;
       else if (isSearchMatch) radius = 5;
 
       let fillStyle = `hsl(0, 0%, ${55 + (Math.abs(node.cluster) % 5) * 9}%)`;
-      let opacity = 0.7;
+      let opacity = 0.85;
 
       if (!isCategoryMatch) {
         opacity = 0.02; // Heavily dim non-category matches
@@ -127,14 +127,14 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
           fillStyle = "#d2d2d2";
           opacity = 1.0;
         } else {
-          opacity = 0.06;
+          opacity = 0.38;
         }
       } else if (searchQuery) {
         if (isSearchMatch) {
           fillStyle = "#d2d2d2";
           opacity = 1.0;
         } else {
-          opacity = 0.12;
+          opacity = 0.4;
         }
       } else if (isHovered) {
         opacity = 1.0;
@@ -144,9 +144,9 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
       ctx.globalAlpha = opacity;
       ctx.fillStyle = fillStyle;
 
-      if (isCategoryMatch && (isSelected || isHovered || isSearchMatch)) {
-        ctx.shadowColor = fillStyle;
-        ctx.shadowBlur = 0;
+      if (isCategoryMatch) {
+        ctx.shadowColor = "rgba(255, 255, 255, 0.65)";
+        ctx.shadowBlur = isSelected ? 16 : isHovered || isSearchMatch ? 10 : 5;
       }
 
       ctx.beginPath();

@@ -136,7 +136,7 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
           // Custom node drawing
           nodeCanvasObject={(node, ctx, globalScale) => {
             const label = node.title;
-            const fontSize = 11 / globalScale;
+            const fontSize = 14 / globalScale;
             ctx.font = `${fontSize}px sans-serif`;
 
             const isSelected = selectedPaperId === node.id;
@@ -144,16 +144,16 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
 
             // Determine coloring
             let fillStyle = `hsl(0, 0%, ${55 + (Math.abs(node.cluster) % 5) * 9}%)`;
-            let radius = isSelected ? 8 : 4.5;
+            let radius = isSelected ? 9 : 5.5;
 
             if (selectedPaperId !== null) {
               if (isSelected) {
-                fillStyle = "#d2d2d2"; // Selected gold
+                fillStyle = "#d2d2d2"; // Selected node
               } else if (isNeighbor) {
-                fillStyle = "#d2d2d2"; // Neighbors green
+                fillStyle = "#d2d2d2"; // Connected nodes
                 radius = 5.5;
               } else {
-                fillStyle = "rgba(43, 43, 43, 0.15)"; // Dim others
+                fillStyle = "rgba(180, 180, 180, 0.38)"; // Dim others
               }
             }
 
@@ -164,7 +164,7 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
             ctx.fillStyle = fillStyle;
             if (isSelected || isNeighbor) {
               ctx.shadowColor = fillStyle;
-              ctx.shadowBlur = 0;
+              ctx.shadowBlur = isSelected ? 14 : 7;
             }
             ctx.fill();
 
@@ -176,18 +176,30 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
             }
             ctx.restore();
 
-            // Draw text labels if zoomed in
-            if (globalScale > 1.4) {
-              const textWidth = ctx.measureText(label).width;
-              const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // padding
-
-              ctx.fillStyle = "rgba(27, 27, 27, 0.85)";
-              ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - radius - bckgDimensions[1] - 2, bckgDimensions[0], bckgDimensions[1]);
-
+            // Keep the selected paper readable without a wall of overlapping labels.
+            const isHovered = hoverNode?.id === node.id;
+            const showLabel = isSelected || isHovered ||
+              (selectedPaperId === null && globalScale > 2.8);
+            if (showLabel) {
+              const displayLabel = label.length > 44 ? label.slice(0, 44) + "…" : label;
+              const padding = 6 / globalScale;
+              const textWidth = ctx.measureText(displayLabel).width;
+              const boxWidth = textWidth + padding * 2;
+              const boxHeight = fontSize + padding * 2;
+              const top = node.y - radius - boxHeight - 5 / globalScale;
+              ctx.save();
+              ctx.fillStyle = "rgba(20, 20, 20, 0.96)";
+              ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+              ctx.lineWidth = 1 / globalScale;
+              ctx.beginPath();
+              ctx.roundRect(node.x - boxWidth / 2, top, boxWidth, boxHeight, 4 / globalScale);
+              ctx.fill();
+              ctx.stroke();
               ctx.textAlign = "center";
               ctx.textBaseline = "middle";
-              ctx.fillStyle = isSelected ? "#d2d2d2" : "#fafafa";
-              ctx.fillText(label.slice(0, 30) + (label.length > 30 ? "..." : ""), node.x, node.y - radius - bckgDimensions[1] / 2 - 2);
+              ctx.fillStyle = "#ffffff";
+              ctx.fillText(displayLabel, node.x, top + boxHeight / 2);
+              ctx.restore();
             }
           }}
 
