@@ -1,79 +1,38 @@
-/* Premium Dashboard Styling & Animations */
-
-/* Custom scrollbars for left panels */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.research-app { background: #080808 !important; height: 100dvh; min-height: 0 !important; }
+.app-header { background: #101010 !important; padding: 22px 28px !important; box-shadow: none !important; border-bottom: 1px solid #2a2a2a !important; flex-shrink: 0; }
+.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #555; border-radius: 9px; font-size: 13px; font-weight: 650; letter-spacing: -1px; color: #fff; }
+.brand h1 { background: none !important; -webkit-text-fill-color: #f4f4f4 !important; font-size: 20px !important; letter-spacing: -.6px !important; font-weight: 600 !important; }
+.brand p { color: #999 !important; margin-top: 2px !important; font-size: 12px !important; }
+.app-layout { min-height: 0; height: auto !important; }
+.sidebar { width: 390px !important; min-width: 390px !important; padding: 22px !important; background: #101010 !important; border-color: #292929 !important; gap: 24px !important; }
+.workspace { min-width: 0; min-height: 0; padding: 24px !important; background: #080808; }
+.search-card { padding: 0 !important; background: none !important; border: 0 !important; }
+.search-card h2 { font-size: 11px !important; letter-spacing: 1.6px !important; color: #aaa !important; margin: 8px 0 14px !important; }
+.search-card input { background: #080808 !important; padding: 12px !important; border: 1px solid #383838 !important; border-radius: 6px !important; }
+.primary-button { background: #eee !important; color: #111 !important; border-radius: 6px !important; padding: 11px 15px !important; font-weight: 650 !important; }
+.primary-button:hover { background: #fff !important; }
+button[aria-pressed='true'] { background: #eee !important; color: #111 !important; }
+button[aria-pressed='false']:hover { background: #303030 !important; color: #fff !important; }
+.result-card { border-radius: 6px !important; border-color: #303030 !important; padding: 13px !important; background: #151515 !important; }
+.result-card:hover, .result-card:focus-within { border-color: #777 !important; background: #1d1d1d !important; }
+.paper-title { background: none; border: 0; color: inherit; padding: 0; text-align: left; cursor: pointer; line-height: 1.55; }
+.paper-title > div:first-child { font-size: 13px !important; color: #e8e8e8 !important; font-weight: 500 !important; }
+.comparison-dialog { background: #111 !important; width: 820px !important; height: min(720px, 88dvh) !important; border-radius: 12px !important; border: 1px solid #414141 !important; box-shadow: 0 24px 100px #000 !important; }
+.comparison-dialog > div:first-child { flex-wrap: wrap; gap: 16px; padding: 24px !important; }
+.comparison-dialog h3 { color: #fafafa !important; letter-spacing: -.3px; }
+.comparison-dialog h4 { color: #fff !important; font-size: 14px !important; margin-top: 24px !important; }
+.comparison-dialog p { line-height: 1.75; }
+.comparison-dialog select { background: #1b1b1b; color: #eee; border: 1px solid #555; border-radius: 5px; padding: 6px 8px; }
+.comparison-dialog section { border-top: 1px solid #333; margin-top: 24px; padding-top: 12px; }
+.spinner { width: 28px; height: 28px; border: 2px solid #3a3a3a; border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 850px) {
+  .research-app { height: auto; min-height: 100dvh !important; overflow: visible !important; }
+  .app-header { align-items: flex-start !important; gap: 18px; flex-wrap: wrap; padding: 20px !important; }
+  .app-layout { flex-direction: column; overflow: visible !important; }
+  .sidebar { width: 100% !important; min-width: 0 !important; overflow: visible !important; border-right: 0 !important; border-bottom: 1px solid #333; }
+  .workspace { min-height: 700px; padding: 16px !important; }
+  .comparison-dialog { max-width: 96% !important; }
 }
-
-::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.4);
-  border-radius: 99px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.2);
-  border-radius: 99px;
-  transition: background 0.3s;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.4);
-}
-
-/* Spinner for loading overlays */
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(56, 189, 248, 0.1);
-  border-top: 3px solid #38bdf8;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Smooth fade-in animation for detail cards */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.card {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Glowing Pulsing Button Styles */
-.glow-button {
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.glow-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
-}
-
-.glow-button:active {
-  transform: translateY(0);
-}
-
-/* Input Focus Glows */
-input:focus {
-  border-color: #38bdf8 !important;
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
-}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

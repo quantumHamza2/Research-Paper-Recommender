@@ -107,34 +107,34 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
       const isSelected = selectedPaperId === node.id;
       const isHovered = hoverNode && hoverNode.id === node.id;
       const isSearchMatch = searchQuery && node.title.toLowerCase().includes(searchQuery.toLowerCase());
-      
+
       // Category match check
-      const isCategoryMatch = selectedCategories.length === 0 || 
+      const isCategoryMatch = selectedCategories.length === 0 ||
         (node.categories && node.categories.some(cat => selectedCategories.includes(cat)));
 
-      let radius = 2.5;
+      let radius = 3.2;
       if (isSelected) radius = 8;
       else if (isHovered) radius = 6;
       else if (isSearchMatch) radius = 5;
 
-      let fillStyle = `hsl(${node.cluster * 32}, 85%, 65%)`;
-      let opacity = 0.7;
+      let fillStyle = `hsl(0, 0%, ${55 + (Math.abs(node.cluster) % 5) * 9}%)`;
+      let opacity = 0.85;
 
       if (!isCategoryMatch) {
         opacity = 0.02; // Heavily dim non-category matches
       } else if (selectedPaperId !== null) {
         if (isSelected) {
-          fillStyle = "#fbbf24";
+          fillStyle = "#d2d2d2";
           opacity = 1.0;
         } else {
-          opacity = 0.06;
+          opacity = 0.38;
         }
       } else if (searchQuery) {
         if (isSearchMatch) {
-          fillStyle = "#38bdf8";
+          fillStyle = "#d2d2d2";
           opacity = 1.0;
         } else {
-          opacity = 0.12;
+          opacity = 0.4;
         }
       } else if (isHovered) {
         opacity = 1.0;
@@ -143,10 +143,10 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
       ctx.save();
       ctx.globalAlpha = opacity;
       ctx.fillStyle = fillStyle;
-      
-      if (isCategoryMatch && (isSelected || isHovered || isSearchMatch)) {
-        ctx.shadowColor = fillStyle;
-        ctx.shadowBlur = isSelected ? 12 : 6;
+
+      if (isCategoryMatch) {
+        ctx.shadowColor = "rgba(255, 255, 255, 0.65)";
+        ctx.shadowBlur = isSelected ? 16 : isHovered || isSearchMatch ? 10 : 5;
       }
 
       ctx.beginPath();
@@ -154,7 +154,7 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
       ctx.fill();
 
       if (isCategoryMatch && (isSelected || isHovered)) {
-        ctx.strokeStyle = isSelected ? "#ffffff" : "rgba(255,255,255,0.8)";
+        ctx.strokeStyle = isSelected ? "#ffffff" : "rgba(255, 255, 255, 0.8)";
         ctx.lineWidth = isSelected ? 2 : 1;
         ctx.stroke();
       }
@@ -187,8 +187,8 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
         const rectHeight = textHeight + 6;
 
         // Draw rounded container badge
-        ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-        ctx.strokeStyle = `hsl(${c.cluster * 32}, 85%, 65%)`;
+        ctx.fillStyle = "rgba(27, 27, 27, 0.85)";
+        ctx.strokeStyle = `hsl(0, 0%, ${55 + (Math.abs(c.cluster) % 5) * 9}%)`;
         ctx.lineWidth = 1;
         ctx.beginPath();
         if (ctx.roundRect) {
@@ -200,7 +200,7 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
         ctx.stroke();
 
         // Keywords text
-        ctx.fillStyle = "#f8fafc";
+        ctx.fillStyle = "#fafafa";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(label, rx, ry);
@@ -220,9 +220,9 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
     let minDistance = 15;
 
     nodes.forEach((node) => {
-      const isCategoryMatch = selectedCategories.length === 0 || 
+      const isCategoryMatch = selectedCategories.length === 0 ||
         (node.categories && node.categories.some(cat => selectedCategories.includes(cat)));
-        
+
       if (!isCategoryMatch) return; // Skip inactive nodes
 
       const normX = (node.x - minX) / (maxX - minX || 1);
@@ -320,11 +320,11 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
         width: "100%",
         height: "100%",
         minHeight: "550px",
-        background: "radial-gradient(circle at center, #0B132B, #020617)",
+        background: "radial-gradient(circle at center, #181818, #0a0a0a)",
         borderRadius: "16px",
         overflow: "hidden",
         border: "1px solid rgba(255, 255, 255, 0.08)",
-        boxShadow: "inset 0 0 20px rgba(0,0,0,0.8)",
+        boxShadow: "inset 0 0 20px rgba(0, 0, 0, 0.8)",
       }}
     >
       <canvas
@@ -350,7 +350,7 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
             position: "absolute",
             bottom: "16px",
             left: "16px",
-            background: "rgba(15, 23, 42, 0.9)",
+            background: "rgba(27, 27, 27, 0.9)",
             backdropFilter: "blur(12px)",
             padding: "10px 14px",
             borderRadius: "12px",
@@ -364,16 +364,16 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
             zIndex: 5,
           }}
         >
-          <div style={{ fontSize: "11px", color: "#64748b", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          <div style={{ fontSize: "11px", color: "#d2d2d2", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "0.5px" }}>
             Topic Legend
           </div>
           {uniqueClusters.slice(0, 15).map((c, i) => {
             const keywords = clusterLabels[c];
             return (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11.5px", color: "#94a3b8" }}>
-                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: `hsl(${c * 32}, 85%, 65%)`, flexShrink: 0 }} />
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11.5px", color: "#d2d2d2" }}>
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: `hsl(0, 0%, ${55 + (Math.abs(c) % 5) * 9}%)`, flexShrink: 0 }} />
                 <span style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
-                  {keywords ? `${keywords}` : `Cluster ${c}`}
+                  {keywords ? `${c < 0 ? "Unassigned" : `C${c}`} · ${keywords}` : `Cluster ${c}`}
                 </span>
               </div>
             );
@@ -396,35 +396,35 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
           onClick={handleReset}
           style={{
             padding: "6px 12px",
-            background: "rgba(30, 41, 59, 0.85)",
+            background: "rgba(43, 43, 43, 0.85)",
             backdropFilter: "blur(12px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: "8px",
-            color: "#e2e8f0",
+            color: "#e9e9e9",
             fontSize: "12px",
             cursor: "pointer",
             fontWeight: "500",
             transition: "all 0.2s",
-            boxShadow: "0 4px 6px rgba(0,0,0,0.15)",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.15)",
           }}
         >
-          🔍 Reset View
+           Reset View
         </button>
         <div
           style={{
             padding: "6px 12px",
-            background: "rgba(15, 23, 42, 0.85)",
+            background: "rgba(27, 27, 27, 0.85)",
             backdropFilter: "blur(12px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: "8px",
-            color: "#64748b",
+            color: "#d2d2d2",
             fontSize: "11px",
             display: "flex",
             alignItems: "center",
-            boxShadow: "0 4px 6px rgba(0,0,0,0.15)",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.15)",
           }}
         >
-          ℹ Drag to pan • Scroll to zoom (Zoom in to see overlays)
+           Drag to pan • Scroll to zoom (Zoom in to see overlays)
         </div>
       </div>
 
@@ -436,31 +436,31 @@ function ResearchMap({ onSelectPaper, selectedPaperId, searchQuery, selectedCate
             bottom: "16px",
             right: "16px",
             width: "280px",
-            background: "rgba(15, 23, 42, 0.95)",
+            background: "rgba(27, 27, 27, 0.95)",
             backdropFilter: "blur(16px)",
             padding: "14px",
             borderRadius: "14px",
-            border: "1px solid rgba(255,255,255,0.12)",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.6)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            boxShadow: "0 8px 30px rgba(0, 0, 0, 0.6)",
             pointerEvents: "none",
             zIndex: 10,
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
-            <span style={{ fontSize: "11px", color: `hsl(${hoverNode.cluster * 32}, 85%, 65%)`, fontWeight: "bold" }}>
+            <span style={{ fontSize: "11px", color: `hsl(0, 0%, ${55 + (Math.abs(hoverNode.cluster) % 5) * 9}%)`, fontWeight: "bold" }}>
               {clusterLabels[hoverNode.cluster] ? clusterLabels[hoverNode.cluster].split(',')[0] : `Cluster ${hoverNode.cluster}`}
             </span>
-            <span style={{ fontSize: "10px", background: "rgba(59, 130, 246, 0.2)", color: "#60a5fa", padding: "2px 6px", borderRadius: "999px" }}>
+            <span style={{ fontSize: "10px", background: "rgba(220, 220, 220, 0.2)", color: "#d2d2d2", padding: "2px 6px", borderRadius: "999px" }}>
               {hoverNode.year}
             </span>
           </div>
-          <div style={{ fontSize: "13px", fontWeight: "600", color: "#f8fafc", lineHeight: "1.4" }}>
+          <div style={{ fontSize: "13px", fontWeight: "600", color: "#fafafa", lineHeight: "1.4" }}>
             {hoverNode.title}
           </div>
           {hoverNode.categories && hoverNode.categories.length > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "8px" }}>
               {hoverNode.categories.slice(0, 3).map((cat, idx) => (
-                <span key={idx} style={{ fontSize: "9px", background: "rgba(255,255,255,0.06)", color: "#94a3b8", padding: "1px 4px", borderRadius: "4px" }}>
+                <span key={idx} style={{ fontSize: "9px", background: "rgba(255, 255, 255, 0.06)", color: "#d2d2d2", padding: "1px 4px", borderRadius: "4px" }}>
                   {cat}
                 </span>
               ))}
