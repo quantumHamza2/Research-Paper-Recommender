@@ -1,3 +1,4 @@
+import { API_BASE } from "./api.js";
 import { useState, useEffect, useRef } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 
@@ -29,7 +30,7 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
     if (!query) return;
 
     setLoading(true);
-    fetch(`http://localhost:8000/graph?query=${encodeURIComponent(query)}`)
+    fetch(`${API_BASE}/graph?query=${encodeURIComponent(query)}`)
       .then((res) => res.json())
       .then((data) => {
         setGraphData({
@@ -89,7 +90,7 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
         width: "100%",
         height: "100%",
         minHeight: "550px",
-        background: "radial-gradient(circle at center, #0B132B, #020617)",
+        background: "radial-gradient(circle at center, #181818, #0a0a0a)",
         borderRadius: "16px",
         border: "1px solid rgba(255, 255, 255, 0.08)",
         overflow: "hidden",
@@ -101,7 +102,7 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
           style={{
             position: "absolute",
             inset: 0,
-            background: "rgba(2, 6, 23, 0.75)",
+            background: "rgba(10, 10, 10, 0.75)",
             backdropFilter: "blur(4px)",
             display: "flex",
             flexDirection: "column",
@@ -111,10 +112,10 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
           }}
         >
           <div className="spinner" style={{ marginBottom: "12px" }} />
-          <div style={{ color: "#38bdf8", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px" }}>
+          <div style={{ color: "#d2d2d2", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px" }}>
             Querying FAISS database...
           </div>
-          <div style={{ color: "#64748b", fontSize: "12px", marginTop: "4px" }}>
+          <div style={{ color: "#d2d2d2", fontSize: "12px", marginTop: "4px" }}>
             Running semantic search & MMR diversification
           </div>
         </div>
@@ -128,7 +129,7 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
           width={dimensions.width}
           height={dimensions.height}
           nodeLabel="title"
-          
+
           // Hover actions
           onNodeHover={(node) => setHoverNode(node || null)}
           onNodeClick={handleNodeClick}
@@ -136,24 +137,24 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
           // Custom node drawing
           nodeCanvasObject={(node, ctx, globalScale) => {
             const label = node.title;
-            const fontSize = 11 / globalScale;
+            const fontSize = 14 / globalScale;
             ctx.font = `${fontSize}px sans-serif`;
 
             const isSelected = selectedPaperId === node.id;
             const isNeighbor = selectedPaperId !== null && graphData.nodes.find(n => n.id === selectedPaperId)?.neighbors?.has(node.id);
 
             // Determine coloring
-            let fillStyle = `hsl(${node.cluster * 32}, 85%, 65%)`;
-            let radius = isSelected ? 8 : 4.5;
+            let fillStyle = `hsl(0, 0%, ${55 + (Math.abs(node.cluster) % 5) * 9}%)`;
+            let radius = isSelected ? 9 : 5.5;
 
             if (selectedPaperId !== null) {
               if (isSelected) {
-                fillStyle = "#facc15"; // Selected gold
+                fillStyle = "#d2d2d2"; // Selected node
               } else if (isNeighbor) {
-                fillStyle = "#22c55e"; // Neighbors green
+                fillStyle = "#d2d2d2"; // Connected nodes
                 radius = 5.5;
               } else {
-                fillStyle = "rgba(30, 41, 59, 0.15)"; // Dim others
+                fillStyle = "rgba(180, 180, 180, 0.38)"; // Dim others
               }
             }
 
@@ -164,10 +165,10 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
             ctx.fillStyle = fillStyle;
             if (isSelected || isNeighbor) {
               ctx.shadowColor = fillStyle;
-              ctx.shadowBlur = isSelected ? 12 : 6;
+              ctx.shadowBlur = isSelected ? 14 : 7;
             }
             ctx.fill();
-            
+
             // White border ring for highlights
             if (isSelected || isNeighbor) {
               ctx.strokeStyle = "#ffffff";
@@ -176,18 +177,30 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
             }
             ctx.restore();
 
-            // Draw text labels if zoomed in
-            if (globalScale > 1.4) {
-              const textWidth = ctx.measureText(label).width;
-              const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // padding
-
-              ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-              ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - radius - bckgDimensions[1] - 2, bckgDimensions[0], bckgDimensions[1]);
-
+            // Keep the selected paper readable without a wall of overlapping labels.
+            const isHovered = hoverNode?.id === node.id;
+            const showLabel = isSelected || isHovered ||
+              (selectedPaperId === null && globalScale > 2.8);
+            if (showLabel) {
+              const displayLabel = label.length > 44 ? label.slice(0, 44) + "…" : label;
+              const padding = 6 / globalScale;
+              const textWidth = ctx.measureText(displayLabel).width;
+              const boxWidth = textWidth + padding * 2;
+              const boxHeight = fontSize + padding * 2;
+              const top = node.y - radius - boxHeight - 5 / globalScale;
+              ctx.save();
+              ctx.fillStyle = "rgba(20, 20, 20, 0.96)";
+              ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+              ctx.lineWidth = 1 / globalScale;
+              ctx.beginPath();
+              ctx.roundRect(node.x - boxWidth / 2, top, boxWidth, boxHeight, 4 / globalScale);
+              ctx.fill();
+              ctx.stroke();
               ctx.textAlign = "center";
               ctx.textBaseline = "middle";
-              ctx.fillStyle = isSelected ? "#facc15" : "#f8fafc";
-              ctx.fillText(label.slice(0, 30) + (label.length > 30 ? "..." : ""), node.x, node.y - radius - bckgDimensions[1] / 2 - 2);
+              ctx.fillStyle = "#ffffff";
+              ctx.fillText(displayLabel, node.x, top + boxHeight / 2);
+              ctx.restore();
             }
           }}
 
@@ -201,8 +214,8 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
           linkColor={(link) => {
             const s = typeof link.source === "object" ? link.source.id : link.source;
             const t = typeof link.target === "object" ? link.target.id : link.target;
-            if (selectedPaperId === null) return "rgba(100, 116, 139, 0.4)";
-            return s === selectedPaperId || t === selectedPaperId ? "#22c55e" : "rgba(30, 41, 59, 0.1)";
+            if (selectedPaperId === null) return "rgba(220, 220, 220, 0.4)";
+            return s === selectedPaperId || t === selectedPaperId ? "#d2d2d2" : "rgba(43, 43, 43, 0.1)";
           }}
           d3VelocityDecay={0.65}
         />
@@ -214,14 +227,14 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
             justifyContent: "center",
             alignItems: "center",
             height: "100%",
-            color: "#64748b",
+            color: "#d2d2d2",
             fontSize: "15px",
             padding: "20px",
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: "40px", marginBottom: "16px", filter: "grayscale(1)" }}>🗺️</div>
-          <div style={{ color: "#94a3b8", fontWeight: "600", fontSize: "16px" }}>
+
+          <div style={{ color: "#d2d2d2", fontWeight: "600", fontSize: "16px" }}>
             Graph Visualization Workspace
           </div>
           <div style={{ fontSize: "13px", marginTop: "6px", maxWidth: "400px" }}>
@@ -238,7 +251,7 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
             bottom: "16px",
             left: "16px",
             width: "280px",
-            background: "rgba(15, 23, 42, 0.95)",
+            background: "rgba(27, 27, 27, 0.95)",
             backdropFilter: "blur(16px)",
             padding: "14px",
             borderRadius: "14px",
@@ -247,10 +260,10 @@ function ResearchGraph({ query, onSelectPaper, selectedPaperId }) {
             pointerEvents: "none",
           }}
         >
-          <div style={{ fontSize: "11px", color: `hsl(${hoverNode.cluster * 32}, 85%, 65%)`, fontWeight: "bold", marginBottom: "4px" }}>
+          <div style={{ fontSize: "11px", color: `hsl(0, 0%, ${55 + (Math.abs(hoverNode.cluster) % 5) * 9}%)`, fontWeight: "bold", marginBottom: "4px" }}>
             Cluster {hoverNode.cluster}
           </div>
-          <div style={{ fontSize: "13px", fontWeight: "600", color: "#f8fafc", lineHeight: "1.4" }}>
+          <div style={{ fontSize: "13px", fontWeight: "600", color: "#fafafa", lineHeight: "1.4" }}>
             {hoverNode.title}
           </div>
         </div>

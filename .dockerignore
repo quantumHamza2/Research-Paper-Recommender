@@ -1,0 +1,9 @@
+.git
+**/node_modules
+**/__pycache__
+**/.env*
+**/dist
+*.npy
+*.faiss
+papers.csv
+tests
