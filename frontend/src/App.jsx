@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./App.css";
 import ResearchGraph from "./ResearchGraph.jsx";
 import ResearchMap from "./ResearchMap.jsx";
 
@@ -8,7 +9,8 @@ function App() {
   const [query, setQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  
+  const [searchError, setSearchError] = useState("");
+
   // Bookmarks & Categories states
   const [bookmarks, setBookmarks] = useState(() => {
     try {
@@ -18,18 +20,30 @@ function App() {
     }
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
-  
+
   // Selection states
   const [selectedPaperId, setSelectedPaperId] = useState(null);
   const [selectedPaperDetails, setSelectedPaperDetails] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
-  
+
   // Synthesis states
   const [checkedSynthesisIds, setCheckedSynthesisIds] = useState([]);
   const [synthesisLoading, setSynthesisLoading] = useState(false);
   const [synthesisText, setSynthesisText] = useState("");
   const [showSynthesisModal, setShowSynthesisModal] = useState(false);
   const [useOllama, setUseOllama] = useState(false);
+  const [ollamaModels, setOllamaModels] = useState([]);
+  const [ollamaModel, setOllamaModel] = useState("");
+  const [synthesisMode, setSynthesisMode] = useState("extractive");
+  const [synthesisWarning, setSynthesisWarning] = useState("");
+  const [synthesisSources, setSynthesisSources] = useState([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/synthesis-status")
+      .then(res => res.json())
+      .then(data => { setOllamaModels(data.models || []); setOllamaModel(data.default_model || ""); })
+      .catch(() => {});
+  }, []);
 
   const [systemStatus, setSystemStatus] = useState({
     status: "initializing",
@@ -94,7 +108,7 @@ function App() {
   // Execute Search
   const handleSearch = (searchQuery) => {
     if (!searchQuery.trim()) return;
-    
+
     // Add to history
     setSearchHistory(prev => {
       const filtered = prev.filter(h => h !== searchQuery);
@@ -102,13 +116,18 @@ function App() {
       return updated;
     });
 
+    setSearchError("");
     fetch(`http://127.0.0.1:8000/search?query=${encodeURIComponent(searchQuery)}`)
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Search unavailable. Please wait for the dataset to load.");
+        return data;
+      })
       .then(data => {
-        setSearchResults(data.results);
+        setSearchResults(data.results || []);
         setActiveTab("search");
       })
-      .catch(err => console.error("Search failed:", err));
+      .catch(err => { setSearchResults([]); setSearchError(err.message); });
   };
 
   // Rebuild Index trigger
@@ -150,14 +169,17 @@ function App() {
   };
 
   // Trigger synthesis request
-  const handleSynthesize = () => {
+  const handleSynthesize = (requestedLLM = useOllama) => {
     if (checkedSynthesisIds.length === 0) {
       alert("Please select at least one paper using the checkboxes in bookmarks or search results.");
       return;
     }
 
     setSynthesisLoading(true);
-    setSynthesisText("Summarizing content and running TF-IDF alignments...");
+    setSynthesisText("");
+    setSynthesisWarning("");
+    setSynthesisSources([]);
+    setSynthesisMode(requestedLLM ? "llm" : "extractive");
     setShowSynthesisModal(true);
 
     fetch("http://127.0.0.1:8000/synthesize", {
@@ -165,13 +187,20 @@ function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         paper_ids: checkedSynthesisIds,
-        use_ollama: useOllama,
-        ollama_model: "llama3"
+        use_ollama: requestedLLM,
+        ollama_model: ollamaModel || "qwen2.5:1.5b"
       })
     })
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Unable to compare these papers.");
+        return data;
+      })
       .then(data => {
+        setSynthesisMode(data.mode || "extractive");
+        setSynthesisWarning(data.warning || "");
         setSynthesisText(data.synthesis);
+        setSynthesisSources(data.sources || []);
       })
       .catch(err => {
         setSynthesisText("Error compiling synthesis report: " + err);
@@ -186,13 +215,13 @@ function App() {
       return;
     }
     const bibtex = bookmarks.map(p => {
-      const authorPart = p.authors && p.authors !== "nan" 
-        ? p.authors.split(',')[0].replace(/[^a-zA-Z]/g, "").toLowerCase() 
+      const authorPart = p.authors && p.authors !== "nan"
+        ? p.authors.split(',')[0].replace(/[^a-zA-Z]/g, "").toLowerCase()
         : "unknown";
       const yearPart = p.year || "2026";
       const titlePart = p.title.split(' ')[0].replace(/[^a-zA-Z]/g, "").toLowerCase();
       const citeKey = `${authorPart}${yearPart}${titlePart}`;
-      
+
       return `@article{${citeKey},
   title={${p.title}},
   author={${p.authors}},
@@ -222,10 +251,12 @@ function App() {
   // Helper to render basic Markdown features (bold & bullet points)
   const renderFormattedText = (text) => {
     return text.split("\n").map((line, idx) => {
-      let formatted = line;
+      line = line.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "");
+      let formatted = line.replace(/^[*\-]\s+/, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       // Bold **text**
       formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-      
+      formatted = formatted.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+
       if (line.trim().startsWith("* ") || line.trim().startsWith("- ")) {
         return (
           <li key={idx} style={{ marginBottom: "6px", marginLeft: "14px" }}
@@ -234,7 +265,7 @@ function App() {
       }
       if (line.trim().startsWith("### ")) {
         return (
-          <h4 key={idx} style={{ fontSize: "14px", color: "#38bdf8", marginTop: "14px", marginBottom: "6px" }}
+          <h4 key={idx} style={{ fontSize: "14px", color: "#d2d2d2", marginTop: "14px", marginBottom: "6px" }}
               dangerouslySetInnerHTML={{ __html: formatted.replace(/^###\s+/, "") }} />
         );
       }
@@ -246,10 +277,10 @@ function App() {
   };
 
   return (
-    <div style={{
-      background: "#030712",
+    <div className="research-app" style={{
+      background: "#090909",
       minHeight: "100vh",
-      color: "#f3f4f6",
+      color: "#f4f4f4",
       fontFamily: "var(--sans)",
       display: "flex",
       flexDirection: "column",
@@ -257,33 +288,34 @@ function App() {
       overflow: "hidden"
     }}>
       {/* HEADER NAVBAR */}
-      <header style={{
+      <header className="app-header" style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         padding: "16px 24px",
-        background: "rgba(17, 24, 39, 0.7)",
+        background: "rgba(27, 27, 27, 0.7)",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
         zIndex: 100,
         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.4)"
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ fontSize: "28px" }}>📚</span>
+        <div className="brand" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <span className="brand-mark" aria-hidden="true">RE</span>
+
           <div>
             <h1 style={{
               fontSize: "19px",
               fontWeight: "700",
               margin: 0,
               letterSpacing: "0.5px",
-              background: "linear-gradient(90deg, #38bdf8, #a78bfa)",
+              background: "linear-gradient(90deg, #d2d2d2, #d2d2d2)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent"
             }}>
-              AI Research Explorer
+              Research Explorer
             </h1>
-            <p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-              Vector Semantic Search & Clustering Recommender
+            <p style={{ fontSize: "11px", color: "#d2d2d2", margin: 0 }}>
+              A workspace for discovery & deeper reading
             </p>
           </div>
         </div>
@@ -292,8 +324,8 @@ function App() {
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div style={{
             fontSize: "12px",
-            background: "rgba(30, 41, 59, 0.6)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(43, 43, 43, 0.6)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
             padding: "6px 14px",
             borderRadius: "999px",
             display: "flex",
@@ -304,20 +336,21 @@ function App() {
               width: "8px",
               height: "8px",
               borderRadius: "50%",
-              background: systemStatus.status === "ready" ? "#10b981" 
-                        : systemStatus.status === "sample_mode" ? "#f59e0b" 
-                        : systemStatus.status === "indexing" ? "#3b82f6" : "#ef4444",
+              background: systemStatus.status === "ready" ? "#d2d2d2"
+                        : systemStatus.status === "sample_mode" ? "#d2d2d2"
+                        : systemStatus.status === "indexing" ? "#d2d2d2" : "#d2d2d2",
               display: "inline-block"
             }} />
-            <span style={{ color: "#94a3b8", fontWeight: "500" }}>
+            <span style={{ color: "#d2d2d2", fontWeight: "500" }}>
               {systemStatus.status === "ready" ? `Database Ready (${systemStatus.papers_count.toLocaleString()} papers)`
                 : systemStatus.status === "sample_mode" ? `Sample Mode (${systemStatus.papers_count} papers)`
                 : systemStatus.status === "indexing" ? `Building Index (${Math.round(systemStatus.indexing_progress * 100)}%)`
+                : systemStatus.status === "initializing" ? "Preparing dataset…"
                 : "Backend Offline"}
             </span>
           </div>
 
-          {systemStatus.status === "sample_mode" && (
+          {systemStatus.status === "sample_mode" && systemStatus.rebuild_enabled && (
             <button
               onClick={handleRebuildIndex}
               className="glow-button"
@@ -325,24 +358,24 @@ function App() {
                 padding: "6px 14px",
                 borderRadius: "999px",
                 border: "none",
-                background: "linear-gradient(90deg, #2563eb, #7c3aed)",
+                background: "linear-gradient(90deg, #d2d2d2, #d2d2d2)",
                 color: "white",
                 fontSize: "11px",
                 fontWeight: "600",
                 cursor: "pointer",
-                boxShadow: "0 4px 10px rgba(99, 102, 241, 0.4)",
+                boxShadow: "0 4px 10px rgba(220, 220, 220, 0.4)",
                 transition: "transform 0.2s"
               }}
             >
-              ⚡ Build Full Index
+               Build Full Index
             </button>
           )}
 
           {systemStatus.status === "indexing" && (
-            <div style={{ width: "80px", height: "4px", background: "#1e293b", borderRadius: "2px", overflow: "hidden" }}>
+            <div style={{ width: "80px", height: "4px", background: "#2b2b2b", borderRadius: "2px", overflow: "hidden" }}>
               <div style={{
                 height: "100%",
-                background: "#3b82f6",
+                background: "#333333",
                 width: `${systemStatus.indexing_progress * 100}%`,
                 transition: "width 0.3s"
               }} />
@@ -352,18 +385,18 @@ function App() {
       </header>
 
       {/* DASHBOARD LAYOUT */}
-      <main style={{
+      <main className="app-layout" style={{
         flex: 1,
         display: "flex",
         overflow: "hidden",
         height: "calc(100vh - 72px)"
       }}>
         {/* LEFT COLUMN: CONTROL & SEARCH PANEL */}
-        <section style={{
+        <section className="sidebar" aria-label="Search and paper details" style={{
           width: "420px",
           minWidth: "420px",
           flexShrink: 0,
-          background: "linear-gradient(180deg, #0f172a, #020617)",
+          background: "linear-gradient(180deg, #1b1b1b, #0a0a0a)",
           borderRight: "1px solid rgba(255, 255, 255, 0.06)",
           display: "flex",
           flexDirection: "column",
@@ -375,22 +408,23 @@ function App() {
           {/* TABS SELECTOR */}
           <div style={{
             display: "flex",
-            background: "rgba(15, 23, 42, 0.6)",
+            background: "rgba(27, 27, 27, 0.6)",
             padding: "4px",
             borderRadius: "10px",
-            border: "1px solid rgba(255,255,255,0.06)"
+            border: "1px solid rgba(255, 255, 255, 0.06)"
           }}>
             {["search", "bookmarks", "history"].map(tab => (
               <button
                 key={tab}
+                aria-pressed={activeTab === tab}
                 onClick={() => setActiveTab(tab)}
                 style={{
                   flex: 1,
                   padding: "8px",
                   border: "none",
                   borderRadius: "8px",
-                  background: activeTab === tab ? "rgba(30, 41, 59, 0.85)" : "none",
-                  color: activeTab === tab ? "#f8fafc" : "#64748b",
+                  background: activeTab === tab ? "rgba(43, 43, 43, 0.85)" : "none",
+                  color: activeTab === tab ? "#fafafa" : "#d2d2d2",
                   fontSize: "12px",
                   fontWeight: "600",
                   textTransform: "capitalize",
@@ -407,39 +441,41 @@ function App() {
           {activeTab === "search" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               {/* SEARCH INPUT */}
-              <div className="card" style={{
-                background: "rgba(30, 41, 59, 0.4)",
-                border: "1px solid rgba(255,255,255,0.06)",
+              <div className="card search-card" style={{
+                background: "rgba(43, 43, 43, 0.4)",
+                border: "1px solid rgba(255, 255, 255, 0.06)",
                 padding: "16px",
                 borderRadius: "16px"
               }}>
-                <h2 style={{ fontSize: "14px", fontWeight: "600", color: "#38bdf8", margin: "0 0 12px 0", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                  🔍 Semantic Search
+                <h2 style={{ fontSize: "14px", fontWeight: "600", color: "#d2d2d2", margin: "0 0 12px 0", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                   Semantic Search
                 </h2>
                 <div style={{ display: "flex", gap: "8px" }}>
                   <input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch(query)}
-                    placeholder="Enter research topics..."
+                    aria-label="Research topic"
+                    placeholder="What are you researching?"
                     style={{
                       flex: 1,
                       padding: "8px 12px",
                       borderRadius: "8px",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
-                      background: "rgba(15, 23, 42, 0.8)",
+                      background: "rgba(27, 27, 27, 0.8)",
                       color: "white",
                       fontSize: "13px",
                       outline: "none"
                     }}
                   />
                   <button
+                    className="primary-button"
                     onClick={() => handleSearch(query)}
                     style={{
                       padding: "8px 14px",
                       borderRadius: "8px",
                       border: "none",
-                      background: "#3b82f6",
+                      background: "#333333",
                       color: "white",
                       cursor: "pointer",
                       fontSize: "12.5px",
@@ -451,14 +487,15 @@ function App() {
                 </div>
               </div>
 
+              {searchError && <p role="alert" style={{color: "#d2d2d2"}}>{searchError}</p>}
               {/* SEARCH RESULTS LIST */}
               {searchResults.length > 0 ? (
                 <div className="card" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "11px", color: "#64748b", fontWeight: "bold", textTransform: "uppercase" }}>
+                    <span style={{ fontSize: "11px", color: "#d2d2d2", fontWeight: "bold", textTransform: "uppercase" }}>
                       Search Results
                     </span>
-                    <button onClick={() => setSearchResults([])} style={{ background: "none", border: "none", color: "#f43f5e", fontSize: "11px", cursor: "pointer" }}>
+                    <button onClick={() => setSearchResults([])} style={{ background: "none", border: "none", color: "#d2d2d2", fontSize: "11px", cursor: "pointer" }}>
                       Clear
                     </button>
                   </div>
@@ -466,11 +503,12 @@ function App() {
                     {searchResults.map((r, i) => (
                       <div
                         key={i}
+                        className="result-card"
                         style={{
                           padding: "10px",
                           borderRadius: "10px",
-                          background: selectedPaperId === r.id ? "rgba(59, 130, 246, 0.15)" : "rgba(15, 23, 42, 0.4)",
-                          border: `1px solid ${selectedPaperId === r.id ? "#3b82f6" : "rgba(255,255,255,0.04)"}`,
+                          background: selectedPaperId === r.id ? "rgba(220, 220, 220, 0.15)" : "rgba(27, 27, 27, 0.4)",
+                          border: `1px solid ${selectedPaperId === r.id ? "#d2d2d2" : "rgba(255, 255, 255, 0.04)"}`,
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "flex-start",
@@ -479,6 +517,7 @@ function App() {
                       >
                         <input
                           type="checkbox"
+                          aria-label={`Compare ${r.title}`}
                           checked={checkedSynthesisIds.includes(r.id)}
                           onChange={(e) => {
                             e.stopPropagation();
@@ -486,21 +525,22 @@ function App() {
                           }}
                           style={{ marginTop: "3px", cursor: "pointer" }}
                         />
-                        <div style={{ flex: 1 }} onClick={() => setSelectedPaperId(r.id)}>
-                          <div style={{ fontSize: "12px", fontWeight: "600", color: selectedPaperId === r.id ? "#93c5fd" : "#cbd5e1" }}>
+                        <button className="paper-title" style={{ flex: 1 }} onClick={() => setSelectedPaperId(r.id)}>
+                          <div style={{ fontSize: "12px", fontWeight: "600", color: selectedPaperId === r.id ? "#d2d2d2" : "#d6d6d6" }}>
                             {r.title}
                           </div>
-                          <div style={{ fontSize: "10px", color: "#64748b", marginTop: "4px" }}>{r.year}</div>
-                        </div>
+                          <div style={{ fontSize: "10px", color: "#d2d2d2", marginTop: "4px" }}>{r.year}</div>
+                        </button>
                       </div>
                     ))}
                   </div>
                   {checkedSynthesisIds.length > 0 && (
                     <button
-                      onClick={handleSynthesize}
+                      className="primary-button"
+                      onClick={() => handleSynthesize()}
                       style={{
                         padding: "10px",
-                        background: "#8b5cf6",
+                        background: "#333333",
                         border: "none",
                         borderRadius: "8px",
                         color: "white",
@@ -510,13 +550,13 @@ function App() {
                         marginTop: "4px"
                       }}
                     >
-                      🧪 Synthesize Selection ({checkedSynthesisIds.length})
+                       Compare selected ({checkedSynthesisIds.length})
                     </button>
                   )}
                 </div>
               ) : (
-                <div style={{ fontSize: "12.5px", color: "#64748b", textAlign: "center", padding: "40px 10px" }}>
-                  Search for topics to display query results.
+                <div style={{ fontSize: "12.5px", color: "#d2d2d2", textAlign: "center", padding: "40px 10px" }}>
+                  Start with a question or a research topic. Your reading list begins here.
                 </div>
               )}
             </div>
@@ -531,24 +571,25 @@ function App() {
                   style={{
                     flex: 1,
                     padding: "8px",
-                    background: bookmarks.length > 0 ? "rgba(59, 130, 246, 0.2)" : "rgba(30,41,59,0.3)",
-                    border: "1px solid rgba(59, 130, 246, 0.4)",
+                    background: bookmarks.length > 0 ? "rgba(220, 220, 220, 0.2)" : "rgba(43, 43, 43, 0.3)",
+                    border: "1px solid rgba(220, 220, 220, 0.4)",
                     borderRadius: "8px",
-                    color: bookmarks.length > 0 ? "#60a5fa" : "#64748b",
+                    color: bookmarks.length > 0 ? "#d2d2d2" : "#d2d2d2",
                     fontSize: "12px",
                     fontWeight: "600",
                     cursor: bookmarks.length > 0 ? "pointer" : "default"
                   }}
                 >
-                  📥 Export BibTeX
+                   Export BibTeX
                 </button>
                 <button
-                  onClick={handleSynthesize}
+                  className="primary-button"
+                      onClick={() => handleSynthesize()}
                   disabled={checkedSynthesisIds.length === 0}
                   style={{
                     flex: 1,
                     padding: "8px",
-                    background: checkedSynthesisIds.length > 0 ? "#8b5cf6" : "rgba(30,41,59,0.3)",
+                    background: checkedSynthesisIds.length > 0 ? "#d2d2d2" : "rgba(43, 43, 43, 0.3)",
                     border: "none",
                     borderRadius: "8px",
                     color: "white",
@@ -557,7 +598,7 @@ function App() {
                     cursor: checkedSynthesisIds.length > 0 ? "pointer" : "default"
                   }}
                 >
-                  🧪 Synthesize ({checkedSynthesisIds.length})
+                   Compare ({checkedSynthesisIds.length})
                 </button>
               </div>
 
@@ -570,8 +611,8 @@ function App() {
                       style={{
                         padding: "10px",
                         borderRadius: "10px",
-                        background: selectedPaperId === b.id ? "rgba(59, 130, 246, 0.15)" : "rgba(15, 23, 42, 0.4)",
-                        border: `1px solid ${selectedPaperId === b.id ? "#3b82f6" : "rgba(255,255,255,0.04)"}`,
+                        background: selectedPaperId === b.id ? "rgba(220, 220, 220, 0.15)" : "rgba(27, 27, 27, 0.4)",
+                        border: `1px solid ${selectedPaperId === b.id ? "#d2d2d2" : "rgba(255, 255, 255, 0.04)"}`,
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "flex-start",
@@ -588,10 +629,10 @@ function App() {
                         style={{ marginTop: "3px", cursor: "pointer" }}
                       />
                       <div style={{ flex: 1 }} onClick={() => setSelectedPaperId(b.id)}>
-                        <div style={{ fontSize: "12px", fontWeight: "600", color: selectedPaperId === b.id ? "#93c5fd" : "#cbd5e1" }}>
+                        <div style={{ fontSize: "12px", fontWeight: "600", color: selectedPaperId === b.id ? "#d2d2d2" : "#d6d6d6" }}>
                           {b.title}
                         </div>
-                        <div style={{ fontSize: "10px", color: "#64748b", marginTop: "4px" }}>
+                        <div style={{ fontSize: "10px", color: "#d2d2d2", marginTop: "4px" }}>
                           {b.authors.split(',')[0]} • {b.year}
                         </div>
                       </div>
@@ -599,7 +640,7 @@ function App() {
                   ))}
                 </div>
               ) : (
-                <div style={{ fontSize: "12.5px", color: "#64748b", textAlign: "center", padding: "40px 10px" }}>
+                <div style={{ fontSize: "12.5px", color: "#d2d2d2", textAlign: "center", padding: "40px 10px" }}>
                   Your Reading List is empty. Bookmark papers to save them here!
                 </div>
               )}
@@ -619,10 +660,10 @@ function App() {
                     style={{
                       padding: "10px 14px",
                       borderRadius: "8px",
-                      background: "rgba(15, 23, 42, 0.4)",
-                      border: "1px solid rgba(255,255,255,0.03)",
+                      background: "rgba(27, 27, 27, 0.4)",
+                      border: "1px solid rgba(255, 255, 255, 0.03)",
                       fontSize: "12px",
-                      color: "#cbd5e1",
+                      color: "#d6d6d6",
                       cursor: "pointer",
                       display: "flex",
                       justifyContent: "space-between",
@@ -630,11 +671,11 @@ function App() {
                     }}
                   >
                     <span>{h}</span>
-                    <span style={{ fontSize: "10px", color: "#64748b" }}>🔍</span>
+
                   </div>
                 ))
               ) : (
-                <div style={{ fontSize: "12.5px", color: "#64748b", textAlign: "center", padding: "40px 10px" }}>
+                <div style={{ fontSize: "12.5px", color: "#d2d2d2", textAlign: "center", padding: "40px 10px" }}>
                   No recent searches.
                 </div>
               )}
@@ -644,14 +685,14 @@ function App() {
           {/* DYNAMIC METADATA DETAIL CARD */}
           <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
             {detailsLoading ? (
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", color: "#64748b" }}>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", color: "#d2d2d2" }}>
                 <div className="spinner" style={{ marginBottom: "12px" }} />
                 <span>Fetching paper metadata...</span>
               </div>
             ) : selectedPaperDetails ? (
               <div className="card" style={{
-                background: "rgba(15, 23, 42, 0.65)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(27, 27, 27, 0.65)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
                 padding: "18px",
                 borderRadius: "18px",
                 display: "flex",
@@ -662,8 +703,8 @@ function App() {
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                     <span style={{
-                      background: `hsl(${selectedPaperDetails.cluster * 32}, 85%, 65%)`,
-                      color: "#030712",
+                      background: `hsl(0, 0%, ${55 + (Math.abs(selectedPaperDetails.cluster) % 5) * 9}%)`,
+                      color: "#090909",
                       padding: "2px 8px",
                       borderRadius: "6px",
                       fontSize: "11px",
@@ -671,7 +712,7 @@ function App() {
                     }}>
                       Cluster {selectedPaperDetails.cluster}
                     </span>
-                    <span style={{ fontSize: "12px", color: "#94a3b8" }}>{selectedPaperDetails.year}</span>
+                    <span style={{ fontSize: "12px", color: "#d2d2d2" }}>{selectedPaperDetails.year}</span>
                   </div>
                   <h2 style={{ fontSize: "15px", fontWeight: "600", color: "white", margin: 0, lineHeight: "1.4" }}>
                     {selectedPaperDetails.title}
@@ -685,8 +726,8 @@ function App() {
                     padding: "8px 12px",
                     borderRadius: "8px",
                     border: "1px solid rgba(255, 255, 255, 0.08)",
-                    background: isBookmarked ? "rgba(245, 158, 11, 0.2)" : "rgba(30, 41, 59, 0.6)",
-                    color: isBookmarked ? "#fbbf24" : "#cbd5e1",
+                    background: isBookmarked ? "rgba(220, 220, 220, 0.2)" : "rgba(43, 43, 43, 0.6)",
+                    color: isBookmarked ? "#d2d2d2" : "#d6d6d6",
                     cursor: "pointer",
                     fontWeight: "600",
                     fontSize: "12px",
@@ -697,18 +738,18 @@ function App() {
                     transition: "all 0.2s"
                   }}
                 >
-                  {isBookmarked ? "★ Bookmarked" : "☆ Bookmark Paper"}
+                  {isBookmarked ? " Bookmarked" : " Bookmark Paper"}
                 </button>
 
-                <div style={{ fontSize: "11.5px", color: "#94a3b8" }}>
-                  <strong style={{ color: "#cbd5e1" }}>Authors: </strong>
+                <div style={{ fontSize: "11.5px", color: "#d2d2d2" }}>
+                  <strong style={{ color: "#d6d6d6" }}>Authors: </strong>
                   {selectedPaperDetails.authors}
                 </div>
 
                 {selectedPaperDetails.categories && selectedPaperDetails.categories.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
                     {selectedPaperDetails.categories.map((c, idx) => (
-                      <span key={idx} style={{ fontSize: "10px", background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", padding: "1px 6px", borderRadius: "4px" }}>
+                      <span key={idx} style={{ fontSize: "10px", background: "rgba(220, 220, 220, 0.15)", color: "#d2d2d2", padding: "1px 6px", borderRadius: "4px" }}>
                         {c}
                       </span>
                     ))}
@@ -717,13 +758,13 @@ function App() {
 
                 <div style={{
                   flex: 1,
-                  background: "rgba(3, 7, 18, 0.4)",
+                  background: "rgba(9, 9, 9, 0.4)",
                   border: "1px solid rgba(255, 255, 255, 0.05)",
                   borderRadius: "10px",
                   padding: "10px",
                   overflowY: "auto",
                   fontSize: "12px",
-                  color: "#cbd5e1",
+                  color: "#d6d6d6",
                   lineHeight: "1.5"
                 }}>
                   {selectedPaperDetails.abstract}
@@ -734,22 +775,22 @@ function App() {
                     width: "100%",
                     padding: "9px",
                     borderRadius: "8px",
-                    background: "#10b981",
+                    background: "#333333",
                     border: "none",
                     color: "white",
                     fontWeight: "600",
                     fontSize: "12.5px",
                     cursor: "pointer"
                   }}>
-                    📄 Open PDF on ArXiv
+                     Open PDF on ArXiv
                   </button>
                 </a>
 
                 {/* RELATED PAPERS */}
                 {selectedPaperDetails.related && selectedPaperDetails.related.length > 0 && (
                   <div>
-                    <h4 style={{ fontSize: "11px", color: "#64748b", textTransform: "uppercase", margin: "0 0 6px 0" }}>
-                      🔗 Related Research
+                    <h4 style={{ fontSize: "11px", color: "#d2d2d2", textTransform: "uppercase", margin: "0 0 6px 0" }}>
+                       Related Research
                     </h4>
                     <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                       {selectedPaperDetails.related.map((p, i) => (
@@ -758,7 +799,7 @@ function App() {
                           onClick={() => setSelectedPaperId(p.id)}
                           style={{
                             fontSize: "11px",
-                            color: "#60a5fa",
+                            color: "#d2d2d2",
                             cursor: "pointer",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
@@ -779,14 +820,14 @@ function App() {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                color: "#64748b",
-                border: "1px dashed rgba(255,255,255,0.08)",
+                color: "#d2d2d2",
+                border: "1px dashed rgba(255, 255, 255, 0.08)",
                 borderRadius: "20px",
                 padding: "20px",
                 textAlign: "center"
               }}>
-                <span style={{ fontSize: "32px", marginBottom: "10px" }}>🔍</span>
-                <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: "600" }}>No Selection</span>
+
+                <span style={{ fontSize: "13px", color: "#d2d2d2", fontWeight: "600" }}>Select a paper</span>
                 <p style={{ fontSize: "11.5px", marginTop: "4px" }}>
                   Hover over or click nodes in the Map landscape, or click graph nodes to display full metadata.
                 </p>
@@ -796,7 +837,7 @@ function App() {
         </section>
 
         {/* RIGHT COLUMN: WORKSPACE CONTAINER */}
-        <section style={{
+        <section className="workspace" aria-label="Research visualization" style={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
@@ -809,7 +850,7 @@ function App() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "rgba(17, 24, 39, 0.4)",
+            background: "rgba(27, 27, 27, 0.4)",
             border: "1px solid rgba(255, 255, 255, 0.06)",
             padding: "8px 16px",
             borderRadius: "12px",
@@ -819,40 +860,42 @@ function App() {
             {/* View toggles */}
             <div style={{ display: "flex", gap: "6px" }}>
               <button
+                aria-pressed={view === "map"}
                 onClick={() => setView("map")}
                 style={{
                   padding: "6px 14px",
                   borderRadius: "8px",
                   border: "none",
-                  background: view === "map" ? "#3b82f6" : "rgba(30, 41, 59, 0.5)",
+                  background: view === "map" ? "#d2d2d2" : "rgba(43, 43, 43, 0.5)",
                   color: "white",
                   fontWeight: "600",
                   fontSize: "12px",
                   cursor: "pointer"
                 }}
               >
-                🗺️ Landscape Map
+                 Landscape Map
               </button>
               <button
+                aria-pressed={view === "graph"}
                 onClick={() => setView("graph")}
                 style={{
                   padding: "6px 14px",
                   borderRadius: "8px",
                   border: "none",
-                  background: view === "graph" ? "#3b82f6" : "rgba(30, 41, 59, 0.5)",
+                  background: view === "graph" ? "#d2d2d2" : "rgba(43, 43, 43, 0.5)",
                   color: "white",
                   fontWeight: "600",
                   fontSize: "12px",
                   cursor: "pointer"
                 }}
               >
-                🕸️ Similarity Graph
+                 Similarity Graph
               </button>
             </div>
 
             {/* CATEGORY TAG PILLS */}
             <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "11px", color: "#64748b", fontWeight: "600", textTransform: "uppercase" }}>
+              <span style={{ fontSize: "11px", color: "#d2d2d2", fontWeight: "600", textTransform: "uppercase" }}>
                 Filter Categories:
               </span>
               {categoriesList.map(cat => {
@@ -865,8 +908,8 @@ function App() {
                       padding: "4px 10px",
                       borderRadius: "6px",
                       border: "1px solid rgba(255, 255, 255, 0.08)",
-                      background: isActive ? "#38bdf8" : "rgba(30, 41, 59, 0.4)",
-                      color: isActive ? "#030712" : "#94a3b8",
+                      background: isActive ? "#d2d2d2" : "rgba(43, 43, 43, 0.4)",
+                      color: isActive ? "#090909" : "#d2d2d2",
                       fontSize: "11px",
                       fontWeight: "600",
                       cursor: "pointer",
@@ -883,7 +926,7 @@ function App() {
                   style={{
                     background: "none",
                     border: "none",
-                    color: "#f43f5e",
+                    color: "#d2d2d2",
                     fontSize: "11px",
                     cursor: "pointer"
                   }}
@@ -896,7 +939,9 @@ function App() {
 
           {/* WORKSPACE GRAPH OR CANVAS */}
           <div style={{ flex: 1, position: "relative" }}>
-            {view === "map" ? (
+            {!["ready", "sample_mode"].includes(systemStatus.status) ? (
+              <p role="status" style={{padding: "24px", color: "#d6d6d6"}}>{systemStatus.message}</p>
+            ) : view === "map" ? (
               <ResearchMap
                 onSelectPaper={setSelectedPaperId}
                 selectedPaperId={selectedPaperId}
@@ -919,7 +964,7 @@ function App() {
         <div style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(3, 7, 18, 0.8)",
+          background: "rgba(9, 9, 9, 0.8)",
           backdropFilter: "blur(10px)",
           display: "flex",
           justifyContent: "center",
@@ -927,16 +972,16 @@ function App() {
           zIndex: 1000,
           animation: "fadeIn 0.2s ease-out"
         }}>
-          <div style={{
+          <div className="comparison-dialog" role="dialog" aria-modal="true" aria-labelledby="comparison-title" style={{
             width: "700px",
             maxWidth: "90%",
             height: "550px",
-            background: "linear-gradient(135deg, #0f172a, #020617)",
-            border: "1px solid rgba(255,255,255,0.12)",
+            background: "linear-gradient(135deg, #1b1b1b, #0a0a0a)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
             borderRadius: "20px",
             display: "flex",
             flexDirection: "column",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.8)",
+            boxShadow: "0 10px 40px rgba(0, 0, 0, 0.8)",
             overflow: "hidden"
           }}>
             {/* Modal Header */}
@@ -945,35 +990,41 @@ function App() {
               justifyContent: "space-between",
               alignItems: "center",
               padding: "16px 24px",
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
-              background: "rgba(17, 24, 39, 0.4)"
+              borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+              background: "rgba(27, 27, 27, 0.4)"
             }}>
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0, color: "#a78bfa" }}>
-                  🧪 Auto Literature Synthesizer
+                <h3 id="comparison-title" style={{ fontSize: "16px", fontWeight: "700", margin: 0, color: "#d2d2d2" }}>
+                   Abstract Comparison
                 </h3>
-                <p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-                  Synthesizing abstracts via Semantic Alignment
+                <p style={{ fontSize: "11px", color: "#d2d2d2", margin: 0 }}>
+                  {synthesisMode === "llm" ? "Local LLM draft · verify claims against the abstracts" : "Extractive comparison · keywords and sentences, no LLM"}
                 </p>
               </div>
 
               {/* Ollama Switcher */}
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <label style={{ fontSize: "11.5px", color: "#cbd5e1", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
+                <label style={{ fontSize: "11.5px", color: "#d6d6d6", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
                   <input
                     type="checkbox"
                     checked={useOllama}
+                    disabled={synthesisLoading || ollamaModels.length === 0}
                     onChange={(e) => {
-                      setUseOllama(e.target.checked);
-                      // Trigger rebuild if checked status changes
-                      setTimeout(handleSynthesize, 100);
+                      const enabled = e.target.checked;
+                      setUseOllama(enabled);
+                      handleSynthesize(enabled);
                     }}
                     style={{ cursor: "pointer" }}
                   />
-                  Use Local Ollama LLM
+                  {ollamaModels.length ? "Use local LLM" : "Local LLM unavailable — restart it and refresh"}
                 </label>
+                {ollamaModels.length > 0 && <select aria-label="Local model" value={ollamaModel}
+                  disabled={synthesisLoading || useOllama} onChange={e => setOllamaModel(e.target.value)}>
+                  {ollamaModels.map(name => <option key={name} value={name}>{name}</option>)}
+                </select>}
               </div>
             </div>
+            {synthesisWarning && <p role="alert" style={{padding: "0 24px", color: "#d2d2d2"}}>{synthesisWarning}</p>}
 
             {/* Modal Content */}
             <div style={{
@@ -981,18 +1032,26 @@ function App() {
               padding: "24px",
               overflowY: "auto",
               fontSize: "13px",
-              color: "#e2e8f0",
+              color: "#e9e9e9",
               lineHeight: "1.6",
-              background: "rgba(3, 7, 18, 0.2)"
+              background: "rgba(9, 9, 9, 0.2)"
             }}>
               {synthesisLoading ? (
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", gap: "12px" }}>
                   <div className="spinner" />
-                  <span style={{ color: "#a78bfa", fontWeight: "600" }}>Running TF-IDF extraction...</span>
+                  <span style={{ color: "#d2d2d2", fontWeight: "600" }}>{synthesisMode === "llm" ? "Generating locally — this may take up to two minutes..." : "Extracting keywords and sentences..."}</span>
                 </div>
               ) : (
                 <div style={{ animation: "fadeIn 0.2s ease-out" }}>
                   {renderFormattedText(synthesisText)}
+                  {synthesisSources.length > 0 && <section aria-label="Source abstracts">
+                    <h3>Source abstracts</h3>
+                    <ul>{synthesisSources.map(source => <li key={source.label}>
+                      [{source.label}] {source.url.startsWith("https://")
+                        ? <a href={source.url} target="_blank" rel="noreferrer" style={{color: "#d2d2d2"}}>{source.title}</a>
+                        : source.title}
+                    </li>)}</ul>
+                  </section>}
                 </div>
               )}
             </div>
@@ -1000,25 +1059,25 @@ function App() {
             {/* Modal Footer */}
             <div style={{
               padding: "16px 24px",
-              borderTop: "1px solid rgba(255,255,255,0.06)",
+              borderTop: "1px solid rgba(255, 255, 255, 0.06)",
               display: "flex",
               justifyContent: "flex-end",
-              background: "rgba(17, 24, 39, 0.4)"
+              background: "rgba(27, 27, 27, 0.4)"
             }}>
               <button
                 onClick={() => setShowSynthesisModal(false)}
                 style={{
                   padding: "8px 18px",
-                  background: "#1e293b",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "#2b2b2b",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
                   borderRadius: "8px",
-                  color: "#cbd5e1",
+                  color: "#d6d6d6",
                   cursor: "pointer",
                   fontWeight: "600",
                   fontSize: "12.5px"
                 }}
               >
-                Close Synthesis
+                Close comparison
               </button>
             </div>
           </div>

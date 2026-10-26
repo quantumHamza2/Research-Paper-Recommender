@@ -1,0 +1,1860 @@
+{
+  "scope": "30 agent-authored known-item queries over first 1000 corpus rows; not general relevance accuracy",
+  "corpus_sha256": "f3888bbd5c2c0d7604ae59eee7426c6f3152855beb8ce8f5e7cdf280c85d572c",
+  "queries_sha256": "149ccd55a2b8d0484061937aba02eeb70d1043e7cf87b50676bc7fdde6bbe978",
+  "platform": "macOS-26.0.1-arm64-arm-64bit-Mach-O",
+  "device": "cpu",
+  "papers": 1000,
+  "queries": 30,
+  "embedding_and_index_seconds": 25.39115329197375,
+  "summary": {
+    "tfidf": {
+      "hit_at_5": 0.9333333333333333,
+      "reciprocal_rank_at_5": 0.7972222222222222,
+      "median_query_ms": 0.5651454848702997
+    },
+    "minilm": {
+      "hit_at_5": 0.9666666666666667,
+      "reciprocal_rank_at_5": 0.8805555555555554,
+      "median_query_ms": 3.939541522413492
+    }
+  },
+  "details": [
+    {
+      "id": "q01",
+      "query": "Collect robot training demonstrations with a smartphone without running a physical robot",
+      "target_url": "https://arxiv.org/pdf/2603.05504v1",
+      "target_title": "RoboPocket: Improve Robot Policies Instantly with Your Phone",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.5,
+        "milliseconds": 13.3262500166893,
+        "top_5": [
+          {
+            "title": "IROSA: Interactive Robot Skill Adaptation using Natural Language",
+            "url": "https://arxiv.org/pdf/2603.03897v1"
+          },
+          {
+            "title": "RoboPocket: Improve Robot Policies Instantly with Your Phone",
+            "url": "https://arxiv.org/pdf/2603.05504v1"
+          },
+          {
+            "title": "Shape-Interpretable Visual Self-Modeling Enables Geometry-Aware Continuum Robot Control",
+            "url": "https://arxiv.org/pdf/2603.01751v1"
+          },
+          {
+            "title": "Robometer: Scaling General-Purpose Robotic Reward Models via Trajectory Comparisons",
+            "url": "https://arxiv.org/pdf/2603.02115v1"
+          },
+          {
+            "title": "Tether: Autonomous Functional Play with Correspondence-Driven Trajectory Warping",
+            "url": "https://arxiv.org/pdf/2603.03278v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 157.33933303272352,
+        "top_5": [
+          {
+            "title": "RoboPocket: Improve Robot Policies Instantly with Your Phone",
+            "url": "https://arxiv.org/pdf/2603.05504v1"
+          },
+          {
+            "title": "RoboCasa365: A Large-Scale Simulation Framework for Training and Benchmarking Generalist Robots",
+            "url": "https://arxiv.org/pdf/2603.04356v1"
+          },
+          {
+            "title": "K^2-Agent: Co-Evolving Know-What and Know-How for Hierarchical Mobile Device Control",
+            "url": "https://arxiv.org/pdf/2603.00676v1"
+          },
+          {
+            "title": "How to Peel with a Knife: Aligning Fine-Grained Manipulation with Human Preference",
+            "url": "https://arxiv.org/pdf/2603.03280v1"
+          },
+          {
+            "title": "IROSA: Interactive Robot Skill Adaptation using Natural Language",
+            "url": "https://arxiv.org/pdf/2603.03897v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q02",
+      "query": "A human annotated dataset linking screenshots webpage structure and browser actions",
+      "target_url": "https://arxiv.org/pdf/2603.05295v1",
+      "target_title": "WebChain: A Large-Scale Human-Annotated Dataset of Real-World Web Interaction Traces",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.3333333333333333,
+        "milliseconds": 0.9084159974008799,
+        "top_5": [
+          {
+            "title": "Atomicity for Agents: Exposing, Exploiting, and Mitigating TOCTOU Vulnerabilities in Browser-Use Agents",
+            "url": "https://arxiv.org/pdf/2603.00476v1"
+          },
+          {
+            "title": "Vibe Code Bench: Evaluating AI Models on End-to-End Web Application Development",
+            "url": "https://arxiv.org/pdf/2603.04601v1"
+          },
+          {
+            "title": "WebChain: A Large-Scale Human-Annotated Dataset of Real-World Web Interaction Traces",
+            "url": "https://arxiv.org/pdf/2603.05295v1"
+          },
+          {
+            "title": "CzechTopic: A Benchmark for Zero-Shot Topic Localization in Historical Czech Documents",
+            "url": "https://arxiv.org/pdf/2603.03884v1"
+          },
+          {
+            "title": "\"When to Hand Off, When to Work Together\": Expanding Human-Agent Co-Creative Collaboration through Concurrent Interaction",
+            "url": "https://arxiv.org/pdf/2603.02050v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 8.074667013715953,
+        "top_5": [
+          {
+            "title": "WebChain: A Large-Scale Human-Annotated Dataset of Real-World Web Interaction Traces",
+            "url": "https://arxiv.org/pdf/2603.05295v1"
+          },
+          {
+            "title": "Atomicity for Agents: Exposing, Exploiting, and Mitigating TOCTOU Vulnerabilities in Browser-Use Agents",
+            "url": "https://arxiv.org/pdf/2603.00476v1"
+          },
+          {
+            "title": "PhotoBench: Beyond Visual Matching Towards Personalized Intent-Driven Photo Retrieval",
+            "url": "https://arxiv.org/pdf/2603.01493v1"
+          },
+          {
+            "title": "TikZilla: Scaling Text-to-TikZ with High-Quality Data and Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.03072v1"
+          },
+          {
+            "title": "WebFactory: Automated Compression of Foundational Language Intelligence into Grounded Web Agents",
+            "url": "https://arxiv.org/pdf/2603.05044v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q03",
+      "query": "Reduce communication costs in federated learning by sending only blocks of parameters",
+      "target_url": "https://arxiv.org/pdf/2603.05116v1",
+      "target_title": "FedBCD:Communication-Efficient Accelerated Block Coordinate Gradient Descent for Federated Learning",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.6713329930789769,
+        "top_5": [
+          {
+            "title": "FedBCD:Communication-Efficient Accelerated Block Coordinate Gradient Descent for Federated Learning",
+            "url": "https://arxiv.org/pdf/2603.05116v1"
+          },
+          {
+            "title": "Noise-aware Client Selection for carbon-efficient Federated Learning via Gradient Norm Thresholding",
+            "url": "https://arxiv.org/pdf/2603.04194v1"
+          },
+          {
+            "title": "Federated Causal Discovery Across Heterogeneous Datasets under Latent Confounding",
+            "url": "https://arxiv.org/pdf/2603.05149v1"
+          },
+          {
+            "title": "DeepAFL: Deep Analytic Federated Learning",
+            "url": "https://arxiv.org/pdf/2603.00579v1"
+          },
+          {
+            "title": "FedRot-LoRA: Mitigating Rotational Misalignment in Federated LoRA",
+            "url": "https://arxiv.org/pdf/2602.23638v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.493042011745274,
+        "top_5": [
+          {
+            "title": "FedBCD:Communication-Efficient Accelerated Block Coordinate Gradient Descent for Federated Learning",
+            "url": "https://arxiv.org/pdf/2603.05116v1"
+          },
+          {
+            "title": "Federated Agentic AI for Wireless Networks: Fundamentals, Approaches, and Applications",
+            "url": "https://arxiv.org/pdf/2603.01755v1"
+          },
+          {
+            "title": "Noise-aware Client Selection for carbon-efficient Federated Learning via Gradient Norm Thresholding",
+            "url": "https://arxiv.org/pdf/2603.04194v1"
+          },
+          {
+            "title": "DeepAFL: Deep Analytic Federated Learning",
+            "url": "https://arxiv.org/pdf/2603.00579v1"
+          },
+          {
+            "title": "FedNSAM:Consistency of Local and Global Flatness for Federated Learning",
+            "url": "https://arxiv.org/pdf/2602.23827v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q04",
+      "query": "Combine human bidding rules with sequence models for online advertising decisions",
+      "target_url": "https://arxiv.org/pdf/2603.04920v1",
+      "target_title": "Knowledge-informed Bidding with Dual-process Control for Online Advertising",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.6132500129751861,
+        "top_5": [
+          {
+            "title": "Knowledge-informed Bidding with Dual-process Control for Online Advertising",
+            "url": "https://arxiv.org/pdf/2603.04920v1"
+          },
+          {
+            "title": "LBM: Hierarchical Large Auto-Bidding Model via Reasoning and Acting",
+            "url": "https://arxiv.org/pdf/2603.05134v1"
+          },
+          {
+            "title": "GMP: A Benchmark for Content Moderation under Co-occurring Violations and Dynamic Rules",
+            "url": "https://arxiv.org/pdf/2603.01724v1"
+          },
+          {
+            "title": "Large Language Models as Bidding Agents in Repeated HetNet Auction",
+            "url": "https://arxiv.org/pdf/2603.04455v1"
+          },
+          {
+            "title": "CodeTaste: Can LLMs Generate Human-Level Code Refactorings?",
+            "url": "https://arxiv.org/pdf/2603.04177v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.488833015784621,
+        "top_5": [
+          {
+            "title": "Knowledge-informed Bidding with Dual-process Control for Online Advertising",
+            "url": "https://arxiv.org/pdf/2603.04920v1"
+          },
+          {
+            "title": "LBM: Hierarchical Large Auto-Bidding Model via Reasoning and Acting",
+            "url": "https://arxiv.org/pdf/2603.05134v1"
+          },
+          {
+            "title": "Large Language Models as Bidding Agents in Repeated HetNet Auction",
+            "url": "https://arxiv.org/pdf/2603.04455v1"
+          },
+          {
+            "title": "Rich Insights from Cheap Signals: Efficient Evaluations via Tensor Factorization",
+            "url": "https://arxiv.org/pdf/2603.02029v2"
+          },
+          {
+            "title": "Build, Judge, Optimize: A Blueprint for Continuous Improvement of Multi-Agent Consumer Assistants",
+            "url": "https://arxiv.org/pdf/2603.03565v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q05",
+      "query": "Compare traditional and deep learning methods for segmenting brain gliomas in MRI",
+      "target_url": "https://arxiv.org/pdf/2603.04796v1",
+      "target_title": "Comparative Evaluation of Traditional Methods and Deep Learning for Brain Glioma Imaging. Review Paper",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.7233329815790057,
+        "top_5": [
+          {
+            "title": "Comparative Evaluation of Traditional Methods and Deep Learning for Brain Glioma Imaging. Review Paper",
+            "url": "https://arxiv.org/pdf/2603.04796v1"
+          },
+          {
+            "title": "Understanding Sources of Demographic Predictability in Brain MRI via Disentangling Anatomy and Contrast",
+            "url": "https://arxiv.org/pdf/2603.04113v1"
+          },
+          {
+            "title": "An Approach to Simultaneous Acquisition of Real-Time MRI Video, EEG, and Surface EMG for Articulatory, Brain, and Muscle Activity During Speech Production",
+            "url": "https://arxiv.org/pdf/2603.04840v1"
+          },
+          {
+            "title": "Non-Invasive Reconstruction of Intracranial EEG Across the Deep Temporal Lobe from Scalp EEG based on Conditional Normalizing Flow",
+            "url": "https://arxiv.org/pdf/2603.03354v1"
+          },
+          {
+            "title": "MPFlow: Multi-modal Posterior-Guided Flow Matching for Zero-Shot MRI Reconstruction",
+            "url": "https://arxiv.org/pdf/2603.03710v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.29670896846801,
+        "top_5": [
+          {
+            "title": "Comparative Evaluation of Traditional Methods and Deep Learning for Brain Glioma Imaging. Review Paper",
+            "url": "https://arxiv.org/pdf/2603.04796v1"
+          },
+          {
+            "title": "Meta-D: Metadata-Aware Architectures for Brain Tumor Analysis and Missing-Modality Segmentation",
+            "url": "https://arxiv.org/pdf/2603.04811v1"
+          },
+          {
+            "title": "LAW & ORDER: Adaptive Spatial Weighting for Medical Diffusion and Segmentation",
+            "url": "https://arxiv.org/pdf/2603.04795v1"
+          },
+          {
+            "title": "Stroke outcome and evolution prediction from CT brain using a spatiotemporal diffusion autoencoder",
+            "url": "https://arxiv.org/pdf/2603.00756v1"
+          },
+          {
+            "title": "MIRAGE: Knowledge Graph-Guided Cross-Cohort MRI Synthesis for Alzheimer's Disease Prediction",
+            "url": "https://arxiv.org/pdf/2603.02434v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q06",
+      "query": "Financial question answering with typed numerical facts and checks on computation traces",
+      "target_url": "https://arxiv.org/pdf/2603.04663v1",
+      "target_title": "Neuro-Symbolic Financial Reasoning via Deterministic Fact Ledgers and Adversarial Low-Latency Hallucination Detector",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5404999828897417,
+        "top_5": [
+          {
+            "title": "Neuro-Symbolic Financial Reasoning via Deterministic Fact Ledgers and Adversarial Low-Latency Hallucination Detector",
+            "url": "https://arxiv.org/pdf/2603.04663v1"
+          },
+          {
+            "title": "Eliciting Numerical Predictive Distributions of LLMs Without Autoregression",
+            "url": "https://arxiv.org/pdf/2603.02913v1"
+          },
+          {
+            "title": "Constructing Synthetic Instruction Datasets for Improving Reasoning in Domain-Specific LLMs: A Case Study in the Japanese Financial Domain",
+            "url": "https://arxiv.org/pdf/2603.01353v1"
+          },
+          {
+            "title": "RAG-X: Systematic Diagnosis of Retrieval-Augmented Generation for Medical Question Answering",
+            "url": "https://arxiv.org/pdf/2603.03541v1"
+          },
+          {
+            "title": "CONE: Embeddings for Complex Numerical Data Preserving Unit and Variable Semantics",
+            "url": "https://arxiv.org/pdf/2603.04741v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.888249979354441,
+        "top_5": [
+          {
+            "title": "Neuro-Symbolic Financial Reasoning via Deterministic Fact Ledgers and Adversarial Low-Latency Hallucination Detector",
+            "url": "https://arxiv.org/pdf/2603.04663v1"
+          },
+          {
+            "title": "Constructing Synthetic Instruction Datasets for Improving Reasoning in Domain-Specific LLMs: A Case Study in the Japanese Financial Domain",
+            "url": "https://arxiv.org/pdf/2603.01353v1"
+          },
+          {
+            "title": "FinTexTS: Financial Text-Paired Time-Series Dataset via Semantic-Based and Multi-Level Pairing",
+            "url": "https://arxiv.org/pdf/2603.02702v1"
+          },
+          {
+            "title": "One-Token Verification for Reasoning Correctness Estimation",
+            "url": "https://arxiv.org/pdf/2603.01025v1"
+          },
+          {
+            "title": "CONE: Embeddings for Complex Numerical Data Preserving Unit and Variable Semantics",
+            "url": "https://arxiv.org/pdf/2603.04741v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q07",
+      "query": "Why iterative flow models improve temporal difference value estimation",
+      "target_url": "https://arxiv.org/pdf/2603.04333v1",
+      "target_title": "What Does Flow Matching Bring To TD Learning?",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.5,
+        "milliseconds": 0.5733340512961149,
+        "top_5": [
+          {
+            "title": "VISA: Value Injection via Shielded Adaptation for Personalized LLM Alignment",
+            "url": "https://arxiv.org/pdf/2603.04822v1"
+          },
+          {
+            "title": "What Does Flow Matching Bring To TD Learning?",
+            "url": "https://arxiv.org/pdf/2603.04333v1"
+          },
+          {
+            "title": "TFWaveFormer: Temporal-Frequency Collaborative Multi-level Wavelet Transformer for Dynamic Link Prediction",
+            "url": "https://arxiv.org/pdf/2603.03963v1"
+          },
+          {
+            "title": "Mean-Flow based One-Step Vision-Language-Action",
+            "url": "https://arxiv.org/pdf/2603.01469v1"
+          },
+          {
+            "title": "General Proximal Flow Networks",
+            "url": "https://arxiv.org/pdf/2603.00751v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.25,
+        "milliseconds": 3.8065839908085763,
+        "top_5": [
+          {
+            "title": "Preconditioned Score and Flow Matching",
+            "url": "https://arxiv.org/pdf/2603.02337v1"
+          },
+          {
+            "title": "General Proximal Flow Networks",
+            "url": "https://arxiv.org/pdf/2603.00751v1"
+          },
+          {
+            "title": "Efficient Flow Matching for Sparse-View CT Reconstruction",
+            "url": "https://arxiv.org/pdf/2603.00205v1"
+          },
+          {
+            "title": "What Does Flow Matching Bring To TD Learning?",
+            "url": "https://arxiv.org/pdf/2603.04333v1"
+          },
+          {
+            "title": "State-Action Inpainting Diffuser for Continuous Control with Delay",
+            "url": "https://arxiv.org/pdf/2603.01553v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q08",
+      "query": "Does reinforcement learning with correct physics answers generalize to different beam supports?",
+      "target_url": "https://arxiv.org/pdf/2603.04124v1",
+      "target_title": "BeamPERL: Parameter-Efficient RL with Verifiable Rewards Specializes Compact LLMs for Structured Beam Mechanics Reasoning",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5651660030707717,
+        "top_5": [
+          {
+            "title": "BeamPERL: Parameter-Efficient RL with Verifiable Rewards Specializes Compact LLMs for Structured Beam Mechanics Reasoning",
+            "url": "https://arxiv.org/pdf/2603.04124v1"
+          },
+          {
+            "title": "Enhancing User Throughput in Multi-panel mmWave Radio Access Networks for Beam-based MU-MIMO Using a DRL Method",
+            "url": "https://arxiv.org/pdf/2603.02745v1"
+          },
+          {
+            "title": "Decoding Answers Before Chain-of-Thought: Evidence from Pre-CoT Probes and Activation Steering",
+            "url": "https://arxiv.org/pdf/2603.01437v1"
+          },
+          {
+            "title": "Enhancing Physics-Informed Neural Networks with Domain-aware Fourier Features: Towards Improved Performance and Interpretable Results",
+            "url": "https://arxiv.org/pdf/2603.02948v1"
+          },
+          {
+            "title": "Stabilized Adaptive Loss and Residual-Based Collocation for Physics-Informed Neural Networks",
+            "url": "https://arxiv.org/pdf/2603.03224v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.329124989453703,
+        "top_5": [
+          {
+            "title": "BeamPERL: Parameter-Efficient RL with Verifiable Rewards Specializes Compact LLMs for Structured Beam Mechanics Reasoning",
+            "url": "https://arxiv.org/pdf/2603.04124v1"
+          },
+          {
+            "title": "Learning to maintain safety through expert demonstrations in settings with unknown constraints: A Q-learning perspective",
+            "url": "https://arxiv.org/pdf/2602.23816v1"
+          },
+          {
+            "title": "Bridging Dynamics Gaps via Diffusion Schr\u00f6dinger Bridge for Cross-Domain Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2602.23737v1"
+          },
+          {
+            "title": "Conservative Equilibrium Discovery in Offline Game-Theoretic Multiagent Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.00374v1"
+          },
+          {
+            "title": "Align and Filter: Improving Performance in Asynchronous On-Policy RL",
+            "url": "https://arxiv.org/pdf/2603.01365v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q09",
+      "query": "Which offline reinforcement learning approach handles noisy wireless network control?",
+      "target_url": "https://arxiv.org/pdf/2603.03932v1",
+      "target_title": "Selecting Offline Reinforcement Learning Algorithms for Stochastic Network Control",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5651249666698277,
+        "top_5": [
+          {
+            "title": "Selecting Offline Reinforcement Learning Algorithms for Stochastic Network Control",
+            "url": "https://arxiv.org/pdf/2603.03932v1"
+          },
+          {
+            "title": "WirelessAgent++: Automated Agentic Workflow Design and Benchmarking for Wireless Networks",
+            "url": "https://arxiv.org/pdf/2603.00501v1"
+          },
+          {
+            "title": "Federated Agentic AI for Wireless Networks: Fundamentals, Approaches, and Applications",
+            "url": "https://arxiv.org/pdf/2603.01755v1"
+          },
+          {
+            "title": "Conservative Equilibrium Discovery in Offline Game-Theoretic Multiagent Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.00374v1"
+          },
+          {
+            "title": "IPD: Boosting Sequential Policy with Imaginary Planning Distillation in Offline Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.04289v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.000791988801211,
+        "top_5": [
+          {
+            "title": "Selecting Offline Reinforcement Learning Algorithms for Stochastic Network Control",
+            "url": "https://arxiv.org/pdf/2603.03932v1"
+          },
+          {
+            "title": "Pessimistic Auxiliary Policy for Offline Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2602.23974v2"
+          },
+          {
+            "title": "Bridging Dynamics Gaps via Diffusion Schr\u00f6dinger Bridge for Cross-Domain Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2602.23737v1"
+          },
+          {
+            "title": "Beyond State-Wise Mirror Descent: Offline Policy Optimization with Parameteric Policies",
+            "url": "https://arxiv.org/pdf/2602.23811v2"
+          },
+          {
+            "title": "IPD: Boosting Sequential Policy with Imaginary Planning Distillation in Offline Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.04289v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q10",
+      "query": "Coordinate a humanoid robot and a person carrying objects together",
+      "target_url": "https://arxiv.org/pdf/2603.03768v1",
+      "target_title": "Cognition to Control - Multi-Agent Learning for Human-Humanoid Collaborative Transport",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 0,
+        "reciprocal_rank_at_5": 0.0,
+        "milliseconds": 0.5252919509075582,
+        "top_5": [
+          {
+            "title": "Large-Language-Model-Guided State Estimation for Partially Observable Task and Motion Planning",
+            "url": "https://arxiv.org/pdf/2603.03704v1"
+          },
+          {
+            "title": "IROSA: Interactive Robot Skill Adaptation using Natural Language",
+            "url": "https://arxiv.org/pdf/2603.03897v1"
+          },
+          {
+            "title": "RoboPocket: Improve Robot Policies Instantly with Your Phone",
+            "url": "https://arxiv.org/pdf/2603.05504v1"
+          },
+          {
+            "title": "NeuroHex: Highly-Efficient Hex Coordinate System for Creating World Models to Enable Adaptive AI",
+            "url": "https://arxiv.org/pdf/2603.00376v2"
+          },
+          {
+            "title": "Monocular 3D Object Position Estimation with VLMs for Human-Robot Interaction",
+            "url": "https://arxiv.org/pdf/2603.01224v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.3333333333333333,
+        "milliseconds": 3.8595410296693444,
+        "top_5": [
+          {
+            "title": "Interaction-Aware Whole-Body Control for Compliant Object Transport",
+            "url": "https://arxiv.org/pdf/2603.03751v1"
+          },
+          {
+            "title": "Monocular 3D Object Position Estimation with VLMs for Human-Robot Interaction",
+            "url": "https://arxiv.org/pdf/2603.01224v1"
+          },
+          {
+            "title": "Cognition to Control - Multi-Agent Learning for Human-Humanoid Collaborative Transport",
+            "url": "https://arxiv.org/pdf/2603.03768v1"
+          },
+          {
+            "title": "GarmentPile++: Affordance-Driven Cluttered Garments Retrieval with Vision-Language Reasoning",
+            "url": "https://arxiv.org/pdf/2603.04158v1"
+          },
+          {
+            "title": "Sketch2Colab: Sketch-Conditioned Multi-Human Animation via Controllable Flow Distillation",
+            "url": "https://arxiv.org/pdf/2603.02190v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q11",
+      "query": "Threat modeling and risk prioritization for language models used in healthcare",
+      "target_url": "https://arxiv.org/pdf/2603.03633v1",
+      "target_title": "Goal-Driven Risk Assessment for LLM-Powered Systems: A Healthcare Case Study",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5777909536845982,
+        "top_5": [
+          {
+            "title": "Goal-Driven Risk Assessment for LLM-Powered Systems: A Healthcare Case Study",
+            "url": "https://arxiv.org/pdf/2603.03633v1"
+          },
+          {
+            "title": "Multi-Agent Influence Diagrams to Hybrid Threat Modeling",
+            "url": "https://arxiv.org/pdf/2603.03526v1"
+          },
+          {
+            "title": "Cyber Threat Intelligence for Artificial Intelligence Systems",
+            "url": "https://arxiv.org/pdf/2603.05068v1"
+          },
+          {
+            "title": "Bridging the Reproducibility Divide: Open Source Software's Role in Standardizing Healthcare AI",
+            "url": "https://arxiv.org/pdf/2603.03367v1"
+          },
+          {
+            "title": "Towards automated data analysis: A guided framework for LLM-based risk estimation",
+            "url": "https://arxiv.org/pdf/2603.04631v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.5,
+        "milliseconds": 4.058999998960644,
+        "top_5": [
+          {
+            "title": "SafeSci: Safety Evaluation of Large Language Models in Science Domains and Beyond",
+            "url": "https://arxiv.org/pdf/2603.01589v1"
+          },
+          {
+            "title": "Goal-Driven Risk Assessment for LLM-Powered Systems: A Healthcare Case Study",
+            "url": "https://arxiv.org/pdf/2603.03633v1"
+          },
+          {
+            "title": "TrustMH-Bench: A Comprehensive Benchmark for Evaluating the Trustworthiness of Large Language Models in Mental Health",
+            "url": "https://arxiv.org/pdf/2603.03047v1"
+          },
+          {
+            "title": "Silent Sabotage During Fine-Tuning: Few-Shot Rationale Poisoning of Compact Medical LLMs",
+            "url": "https://arxiv.org/pdf/2603.02262v1"
+          },
+          {
+            "title": "Design Behaviour Codes (DBCs): A Taxonomy-Driven Layered Governance Benchmark for Large Language Models",
+            "url": "https://arxiv.org/pdf/2603.04837v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q12",
+      "query": "How hidden representations change when language models face harder unfamiliar questions",
+      "target_url": "https://arxiv.org/pdf/2603.03415v1",
+      "target_title": "Farther the Shift, Sparser the Representation: Analyzing OOD Mechanisms in LLMs",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.6345000001601875,
+        "top_5": [
+          {
+            "title": "Farther the Shift, Sparser the Representation: Analyzing OOD Mechanisms in LLMs",
+            "url": "https://arxiv.org/pdf/2603.03415v1"
+          },
+          {
+            "title": "Ask don't tell: Reducing sycophancy in large language models",
+            "url": "https://arxiv.org/pdf/2602.23971v1"
+          },
+          {
+            "title": "Induced Numerical Instability: Hidden Costs in Multimodal Large Language Models",
+            "url": "https://arxiv.org/pdf/2603.04453v1"
+          },
+          {
+            "title": "You Only Need One Stage: Novel-View Synthesis From A Single Blind Face Image",
+            "url": "https://arxiv.org/pdf/2603.01328v1"
+          },
+          {
+            "title": "StegaFFD: Privacy-Preserving Face Forgery Detection via Fine-Grained Steganographic Domain Lifting",
+            "url": "https://arxiv.org/pdf/2603.02886v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.9391660247929394,
+        "top_5": [
+          {
+            "title": "Farther the Shift, Sparser the Representation: Analyzing OOD Mechanisms in LLMs",
+            "url": "https://arxiv.org/pdf/2603.03415v1"
+          },
+          {
+            "title": "Ask don't tell: Reducing sycophancy in large language models",
+            "url": "https://arxiv.org/pdf/2602.23971v1"
+          },
+          {
+            "title": "Universal Conceptual Structure in Neural Translation: Probing NLLB-200's Multilingual Geometry",
+            "url": "https://arxiv.org/pdf/2603.02258v1"
+          },
+          {
+            "title": "The Spike, the Sparse and the Sink: Anatomy of Massive Activations and Attention Sinks",
+            "url": "https://arxiv.org/pdf/2603.05498v1"
+          },
+          {
+            "title": "Reasoning Theater: Disentangling Model Beliefs from Chain-of-Thought",
+            "url": "https://arxiv.org/pdf/2603.05488v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q13",
+      "query": "Detect fraud on graphs using transformers and neighborhoods at different scales",
+      "target_url": "https://arxiv.org/pdf/2603.03106v1",
+      "target_title": "Multi-Scale Adaptive Neighborhood Awareness Transformer For Graph Fraud Detection",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5406250129453838,
+        "top_5": [
+          {
+            "title": "Multi-Scale Adaptive Neighborhood Awareness Transformer For Graph Fraud Detection",
+            "url": "https://arxiv.org/pdf/2603.03106v1"
+          },
+          {
+            "title": "Retrievit: In-context Retrieval Capabilities of Transformers, State Space Models, and Hybrid Architectures",
+            "url": "https://arxiv.org/pdf/2603.02874v1"
+          },
+          {
+            "title": "Memory Caching: RNNs with Growing Memory",
+            "url": "https://arxiv.org/pdf/2602.24281v1"
+          },
+          {
+            "title": "On the Expressive Power of Transformers for Maxout Networks and Continuous Piecewise Linear Functions",
+            "url": "https://arxiv.org/pdf/2603.03084v1"
+          },
+          {
+            "title": "GraphScout: Empowering Large Language Models with Intrinsic Exploration Ability for Agentic Graph Reasoning",
+            "url": "https://arxiv.org/pdf/2603.01410v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.806833003181964,
+        "top_5": [
+          {
+            "title": "Multi-Scale Adaptive Neighborhood Awareness Transformer For Graph Fraud Detection",
+            "url": "https://arxiv.org/pdf/2603.03106v1"
+          },
+          {
+            "title": "Mitigating topology biases in Graph Diffusion via Counterfactual Intervention",
+            "url": "https://arxiv.org/pdf/2603.02005v1"
+          },
+          {
+            "title": "Tide: A Customisable Dataset Generator for Anti-Money Laundering Research",
+            "url": "https://arxiv.org/pdf/2603.01863v1"
+          },
+          {
+            "title": "Learning to Explore: Policy-Guided Outlier Synthesis for Graph Out-of-Distribution Detection",
+            "url": "https://arxiv.org/pdf/2603.00602v1"
+          },
+          {
+            "title": "Poisoning the Inner Prediction Logic of Graph Neural Networks for Clean-Label Backdoor Attacks",
+            "url": "https://arxiv.org/pdf/2603.05004v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q14",
+      "query": "Predict ship movement with language models trained using reinforcement learning",
+      "target_url": "https://arxiv.org/pdf/2603.02939v1",
+      "target_title": "ShipTraj-R1: Reinforcing Ship Trajectory Prediction in Large Language Models via Group Relative Policy Optimization",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.5,
+        "milliseconds": 0.57516701053828,
+        "top_5": [
+          {
+            "title": "Towards Explainable Deep Learning for Ship Trajectory Prediction in Inland Waterways",
+            "url": "https://arxiv.org/pdf/2603.04472v1"
+          },
+          {
+            "title": "ShipTraj-R1: Reinforcing Ship Trajectory Prediction in Large Language Models via Group Relative Policy Optimization",
+            "url": "https://arxiv.org/pdf/2603.02939v1"
+          },
+          {
+            "title": "Multi-Agent-Based Simulation of Archaeological Mobility in Uneven Landscapes",
+            "url": "https://arxiv.org/pdf/2603.03390v1"
+          },
+          {
+            "title": "Using Vision + Language Models to Predict Item Difficulty",
+            "url": "https://arxiv.org/pdf/2603.04670v1"
+          },
+          {
+            "title": "Self-adapting Robotic Agents through Online Continual Reinforcement Learning with World Model Feedback",
+            "url": "https://arxiv.org/pdf/2603.04029v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.749458002857864,
+        "top_5": [
+          {
+            "title": "ShipTraj-R1: Reinforcing Ship Trajectory Prediction in Large Language Models via Group Relative Policy Optimization",
+            "url": "https://arxiv.org/pdf/2603.02939v1"
+          },
+          {
+            "title": "Towards Explainable Deep Learning for Ship Trajectory Prediction in Inland Waterways",
+            "url": "https://arxiv.org/pdf/2603.04472v1"
+          },
+          {
+            "title": "LLM-Grounded Explainability for Port Congestion Prediction via Temporal Graph Attention Networks",
+            "url": "https://arxiv.org/pdf/2603.04818v1"
+          },
+          {
+            "title": "Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model",
+            "url": "https://arxiv.org/pdf/2603.05438v1"
+          },
+          {
+            "title": "RAPO: Expanding Exploration for LLM Agents via Retrieval-Augmented Policy Optimization",
+            "url": "https://arxiv.org/pdf/2603.03078v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q15",
+      "query": "Adapt visual features to the question rather than using a fixed image representation",
+      "target_url": "https://arxiv.org/pdf/2603.02748v1",
+      "target_title": "iGVLM: Dynamic Instruction-Guided Vision Encoding for Question-Aware Multimodal Understanding",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.25,
+        "milliseconds": 0.5790420109406114,
+        "top_5": [
+          {
+            "title": "Taxonomy-Aware Representation Alignment for Hierarchical Visual Recognition with Large Multimodal Models",
+            "url": "https://arxiv.org/pdf/2603.00431v1"
+          },
+          {
+            "title": "Cross-modal Identity Mapping: Minimizing Information Loss in Modality Conversion via Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.01696v1"
+          },
+          {
+            "title": "Guiding Diffusion-based Reconstruction with Contrastive Signals for Balanced Visual Representation",
+            "url": "https://arxiv.org/pdf/2603.04803v1"
+          },
+          {
+            "title": "iGVLM: Dynamic Instruction-Guided Vision Encoding for Question-Aware Multimodal Understanding",
+            "url": "https://arxiv.org/pdf/2603.02748v1"
+          },
+          {
+            "title": "You Only Need One Stage: Novel-View Synthesis From A Single Blind Face Image",
+            "url": "https://arxiv.org/pdf/2603.01328v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 0,
+        "reciprocal_rank_at_5": 0.0,
+        "milliseconds": 3.950375015847385,
+        "top_5": [
+          {
+            "title": "DQE-CIR: Distinctive Query Embeddings through Learnable Attribute Weights and Target Relative Negative Sampling in Composed Image Retrieval",
+            "url": "https://arxiv.org/pdf/2603.04037v1"
+          },
+          {
+            "title": "Enhancing Zero-shot Commonsense Reasoning by Integrating Visual Knowledge via Machine Imagination",
+            "url": "https://arxiv.org/pdf/2603.05040v1"
+          },
+          {
+            "title": "Location-Aware Pretraining for Medical Difference Visual Question Answering",
+            "url": "https://arxiv.org/pdf/2603.04950v1"
+          },
+          {
+            "title": "MMR-Life: Piecing Together Real-life Scenes for Multimodal Multi-image Reasoning",
+            "url": "https://arxiv.org/pdf/2603.02024v1"
+          },
+          {
+            "title": "TACIT Benchmark: A Programmatic Visual Reasoning Benchmark for Generative and Discriminative Models",
+            "url": "https://arxiv.org/pdf/2603.00206v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q16",
+      "query": "Reduce confusion between similar image classes using learned text prompts",
+      "target_url": "https://arxiv.org/pdf/2603.02557v1",
+      "target_title": "CAPT: Confusion-Aware Prompt Tuning for Reducing Vision-Language Misalignment",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5394169711507857,
+        "top_5": [
+          {
+            "title": "CAPT: Confusion-Aware Prompt Tuning for Reducing Vision-Language Misalignment",
+            "url": "https://arxiv.org/pdf/2603.02557v1"
+          },
+          {
+            "title": "DQE-CIR: Distinctive Query Embeddings through Learnable Attribute Weights and Target Relative Negative Sampling in Composed Image Retrieval",
+            "url": "https://arxiv.org/pdf/2603.04037v1"
+          },
+          {
+            "title": "Confusion-Aware Rubric Optimization for LLM-based Automated Grading",
+            "url": "https://arxiv.org/pdf/2603.00451v1"
+          },
+          {
+            "title": "Order Is Not Layout: Order-to-Space Bias in Image Generation",
+            "url": "https://arxiv.org/pdf/2603.03714v1"
+          },
+          {
+            "title": "Improving Text-to-Image Generation with Intrinsic Self-Confidence Rewards",
+            "url": "https://arxiv.org/pdf/2603.00918v2"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.3333333333333333,
+        "milliseconds": 4.136000003200024,
+        "top_5": [
+          {
+            "title": "RAISE: Requirement-Adaptive Evolutionary Refinement for Training-Free Text-to-Image Alignment",
+            "url": "https://arxiv.org/pdf/2603.00483v1"
+          },
+          {
+            "title": "Whispering to a Blackbox: Bootstrapping Frozen OCR with Visual Prompts",
+            "url": "https://arxiv.org/pdf/2603.05276v1"
+          },
+          {
+            "title": "CAPT: Confusion-Aware Prompt Tuning for Reducing Vision-Language Misalignment",
+            "url": "https://arxiv.org/pdf/2603.02557v1"
+          },
+          {
+            "title": "Reclaiming Lost Text Layers for Source-Free Cross-Domain Few-Shot Learning",
+            "url": "https://arxiv.org/pdf/2603.05235v1"
+          },
+          {
+            "title": "Location-Aware Pretraining for Medical Difference Visual Question Answering",
+            "url": "https://arxiv.org/pdf/2603.04950v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q17",
+      "query": "Write stories by moving virtual characters and objects in mixed reality",
+      "target_url": "https://arxiv.org/pdf/2603.02366v1",
+      "target_title": "PlayWrite: A Multimodal System for AI Supported Narrative Co-Authoring Through Play in XR",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.4973330069333315,
+        "top_5": [
+          {
+            "title": "PlayWrite: A Multimodal System for AI Supported Narrative Co-Authoring Through Play in XR",
+            "url": "https://arxiv.org/pdf/2603.02366v1"
+          },
+          {
+            "title": "Diagnosing Retrieval vs. Utilization Bottlenecks in LLM Agent Memory",
+            "url": "https://arxiv.org/pdf/2603.02473v1"
+          },
+          {
+            "title": "Large-Language-Model-Guided State Estimation for Partially Observable Task and Motion Planning",
+            "url": "https://arxiv.org/pdf/2603.03704v1"
+          },
+          {
+            "title": "Mixture of Universal Experts: Scaling Virtual Width via Depth-Width Transformation",
+            "url": "https://arxiv.org/pdf/2603.04971v1"
+          },
+          {
+            "title": "ARGUS: Seeing the Influence of Narrative Features on Persuasion in Argumentative Texts",
+            "url": "https://arxiv.org/pdf/2602.24109v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.914874978363514,
+        "top_5": [
+          {
+            "title": "PlayWrite: A Multimodal System for AI Supported Narrative Co-Authoring Through Play in XR",
+            "url": "https://arxiv.org/pdf/2603.02366v1"
+          },
+          {
+            "title": "RealWonder: Real-Time Physical Action-Conditioned Video Generation",
+            "url": "https://arxiv.org/pdf/2603.05449v1"
+          },
+          {
+            "title": "Sketch2Colab: Sketch-Conditioned Multi-Human Animation via Controllable Flow Distillation",
+            "url": "https://arxiv.org/pdf/2603.02190v1"
+          },
+          {
+            "title": "Non-verbal Real-time Human-AI Interaction in Constrained Robotic Environments",
+            "url": "https://arxiv.org/pdf/2603.01804v1"
+          },
+          {
+            "title": "ShareVerse: Multi-Agent Consistent Video Generation for Shared World Modeling",
+            "url": "https://arxiv.org/pdf/2603.02697v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q18",
+      "query": "How quickly does gradient descent improve robustness margins in a small ReLU network?",
+      "target_url": "https://arxiv.org/pdf/2603.02095v1",
+      "target_title": "On the Rate of Convergence of GD in Non-linear Neural Networks: An Adversarial Robustness Perspective",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.3333333333333333,
+        "milliseconds": 0.6015420076437294,
+        "top_5": [
+          {
+            "title": "Beyond State-Wise Mirror Descent: Offline Policy Optimization with Parameteric Policies",
+            "url": "https://arxiv.org/pdf/2602.23811v2"
+          },
+          {
+            "title": "High-order Knowledge Based Network Controllability Robustness Prediction: A Hypergraph Neural Network Approach",
+            "url": "https://arxiv.org/pdf/2603.02265v1"
+          },
+          {
+            "title": "On the Rate of Convergence of GD in Non-linear Neural Networks: An Adversarial Robustness Perspective",
+            "url": "https://arxiv.org/pdf/2603.02095v1"
+          },
+          {
+            "title": "Reasoning as Gradient: Scaling MLE Agents Beyond Tree Search",
+            "url": "https://arxiv.org/pdf/2603.01692v1"
+          },
+          {
+            "title": "Graph Hopfield Networks: Energy-Based Node Classification with Associative Memory",
+            "url": "https://arxiv.org/pdf/2603.03464v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.236583015881479,
+        "top_5": [
+          {
+            "title": "On the Rate of Convergence of GD in Non-linear Neural Networks: An Adversarial Robustness Perspective",
+            "url": "https://arxiv.org/pdf/2603.02095v1"
+          },
+          {
+            "title": "Joint Training Across Multiple Activation Sparsity Regimes",
+            "url": "https://arxiv.org/pdf/2603.03131v1"
+          },
+          {
+            "title": "Why Do Neural Networks Forget: A Study of Collapse in Continual Learning",
+            "url": "https://arxiv.org/pdf/2603.04580v1"
+          },
+          {
+            "title": "Curvature-Weighted Capacity Allocation: A Minimum Description Length Framework for Layer-Adaptive Large Language Model Optimization",
+            "url": "https://arxiv.org/pdf/2603.00910v1"
+          },
+          {
+            "title": "Preconditioned Score and Flow Matching",
+            "url": "https://arxiv.org/pdf/2603.02337v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q19",
+      "query": "Compare human judgments with automated measures of topic model quality",
+      "target_url": "https://arxiv.org/pdf/2603.01945v1",
+      "target_title": "When Numbers Tell Half the Story: Human-Metric Alignment in Topic Model Evaluation",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5644159973599017,
+        "top_5": [
+          {
+            "title": "When Numbers Tell Half the Story: Human-Metric Alignment in Topic Model Evaluation",
+            "url": "https://arxiv.org/pdf/2603.01945v1"
+          },
+          {
+            "title": "CzechTopic: A Benchmark for Zero-Shot Topic Localization in Historical Czech Documents",
+            "url": "https://arxiv.org/pdf/2603.03884v1"
+          },
+          {
+            "title": "Multi-Agent Influence Diagrams to Hybrid Threat Modeling",
+            "url": "https://arxiv.org/pdf/2603.03526v1"
+          },
+          {
+            "title": "Towards automated data analysis: A guided framework for LLM-based risk estimation",
+            "url": "https://arxiv.org/pdf/2603.04631v1"
+          },
+          {
+            "title": "A Multi-Dimensional Quality Scoring Framework for Decentralized LLM Inference with Proof of Quality",
+            "url": "https://arxiv.org/pdf/2603.04028v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.7294169887900352,
+        "top_5": [
+          {
+            "title": "When Numbers Tell Half the Story: Human-Metric Alignment in Topic Model Evaluation",
+            "url": "https://arxiv.org/pdf/2603.01945v1"
+          },
+          {
+            "title": "CzechTopic: A Benchmark for Zero-Shot Topic Localization in Historical Czech Documents",
+            "url": "https://arxiv.org/pdf/2603.03884v1"
+          },
+          {
+            "title": "APRES: An Agentic Paper Revision and Evaluation System",
+            "url": "https://arxiv.org/pdf/2603.03142v1"
+          },
+          {
+            "title": "When Metrics Disagree: Automatic Similarity vs. LLM-as-a-Judge for Clinical Dialogue Evaluation",
+            "url": "https://arxiv.org/pdf/2603.00314v1"
+          },
+          {
+            "title": "Resources for Automated Evaluation of Assistive RAG Systems that Help Readers with News Trustworthiness Assessment",
+            "url": "https://arxiv.org/pdf/2602.24277v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q20",
+      "query": "Use images and explicit shape representations to control flexible continuum robots",
+      "target_url": "https://arxiv.org/pdf/2603.01751v1",
+      "target_title": "Shape-Interpretable Visual Self-Modeling Enables Geometry-Aware Continuum Robot Control",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5499579710885882,
+        "top_5": [
+          {
+            "title": "Shape-Interpretable Visual Self-Modeling Enables Geometry-Aware Continuum Robot Control",
+            "url": "https://arxiv.org/pdf/2603.01751v1"
+          },
+          {
+            "title": "The Controllability Trap: A Governance Framework for Military AI Agents",
+            "url": "https://arxiv.org/pdf/2603.03515v1"
+          },
+          {
+            "title": "PseudoAct: Leveraging Pseudocode Synthesis for Flexible Planning and Action Control in Large Language Model Agents",
+            "url": "https://arxiv.org/pdf/2602.23668v1"
+          },
+          {
+            "title": "SkeleGuide: Explicit Skeleton Reasoning for Context-Aware Human-in-Place Image Synthesis",
+            "url": "https://arxiv.org/pdf/2603.01579v1"
+          },
+          {
+            "title": "TMR-VLA:Vision-Language-Action Model for Magnetic Motion Control of Tri-leg Silicone-based Soft Robot",
+            "url": "https://arxiv.org/pdf/2603.00420v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.101166967302561,
+        "top_5": [
+          {
+            "title": "Shape-Interpretable Visual Self-Modeling Enables Geometry-Aware Continuum Robot Control",
+            "url": "https://arxiv.org/pdf/2603.01751v1"
+          },
+          {
+            "title": "TMR-VLA:Vision-Language-Action Model for Magnetic Motion Control of Tri-leg Silicone-based Soft Robot",
+            "url": "https://arxiv.org/pdf/2603.00420v1"
+          },
+          {
+            "title": "Retrieval-Augmented Robots via Retrieve-Reason-Act",
+            "url": "https://arxiv.org/pdf/2603.02688v1"
+          },
+          {
+            "title": "HydroShear: Hydroelastic Shear Simulation for Tactile Sim-to-Real Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.00446v1"
+          },
+          {
+            "title": "Self-adapting Robotic Agents through Online Continual Reinforcement Learning with World Model Feedback",
+            "url": "https://arxiv.org/pdf/2603.04029v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q21",
+      "query": "Detect camouflaged objects by separating brightness from color information",
+      "target_url": "https://arxiv.org/pdf/2603.01602v1",
+      "target_title": "YCDa: YCbCr Decoupled Attention for Real-time Realistic Camouflaged Object Detection",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5362500087358057,
+        "top_5": [
+          {
+            "title": "YCDa: YCbCr Decoupled Attention for Real-time Realistic Camouflaged Object Detection",
+            "url": "https://arxiv.org/pdf/2603.01602v1"
+          },
+          {
+            "title": "Large-Language-Model-Guided State Estimation for Partially Observable Task and Motion Planning",
+            "url": "https://arxiv.org/pdf/2603.03704v1"
+          },
+          {
+            "title": "Towards Generalized Multimodal Homography Estimation",
+            "url": "https://arxiv.org/pdf/2603.03956v1"
+          },
+          {
+            "title": "Information-Theoretic Framework for Self-Adapting Model Predictive Controllers",
+            "url": "https://arxiv.org/pdf/2603.01286v1"
+          },
+          {
+            "title": "Dissociating Direct Access from Inference in AI Introspection",
+            "url": "https://arxiv.org/pdf/2603.05414v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.913958033081144,
+        "top_5": [
+          {
+            "title": "YCDa: YCbCr Decoupled Attention for Real-time Realistic Camouflaged Object Detection",
+            "url": "https://arxiv.org/pdf/2603.01602v1"
+          },
+          {
+            "title": "A 360-degree Multi-camera System for Blue Emergency Light Detection Using Color Attention RT-DETR and the ABLDataset",
+            "url": "https://arxiv.org/pdf/2603.05058v1"
+          },
+          {
+            "title": "Evidential Neural Radiance Fields",
+            "url": "https://arxiv.org/pdf/2602.23574v1"
+          },
+          {
+            "title": "Modelling and Simulation of Neuromorphic Datasets for Anomaly Detection in Computer Vision",
+            "url": "https://arxiv.org/pdf/2602.23514v1"
+          },
+          {
+            "title": "Towards Generalized Multimodal Homography Estimation",
+            "url": "https://arxiv.org/pdf/2603.03956v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q22",
+      "query": "Search for protein information using sequences and repeated multimodal agent actions",
+      "target_url": "https://arxiv.org/pdf/2603.01464v1",
+      "target_title": "ProtRLSearch: A Multi-Round Multimodal Protein Search Agent with Large Language Models Trained via Reinforcement Learning",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5652090185321867,
+        "top_5": [
+          {
+            "title": "ProtRLSearch: A Multi-Round Multimodal Protein Search Agent with Large Language Models Trained via Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.01464v1"
+          },
+          {
+            "title": "MM-DeepResearch: A Simple and Effective Multimodal Agentic Search Baseline",
+            "url": "https://arxiv.org/pdf/2603.01050v1"
+          },
+          {
+            "title": "Rigidity-Aware Geometric Pretraining for Protein Design and Conformational Ensembles",
+            "url": "https://arxiv.org/pdf/2603.02406v1"
+          },
+          {
+            "title": "Inference-Time Toxicity Mitigation in Protein Language Models",
+            "url": "https://arxiv.org/pdf/2603.04045v1"
+          },
+          {
+            "title": "Multimodal Mixture-of-Experts with Retrieval Augmentation for Protein Active Site Identification",
+            "url": "https://arxiv.org/pdf/2603.01511v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.939917020034045,
+        "top_5": [
+          {
+            "title": "ProtRLSearch: A Multi-Round Multimodal Protein Search Agent with Large Language Models Trained via Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.01464v1"
+          },
+          {
+            "title": "MM-DeepResearch: A Simple and Effective Multimodal Agentic Search Baseline",
+            "url": "https://arxiv.org/pdf/2603.01050v1"
+          },
+          {
+            "title": "Multimodal Mixture-of-Experts with Retrieval Augmentation for Protein Active Site Identification",
+            "url": "https://arxiv.org/pdf/2603.01511v1"
+          },
+          {
+            "title": "MC-Search: Evaluating and Enhancing Multimodal Agentic Search with Structured Long Reasoning Chains",
+            "url": "https://arxiv.org/pdf/2603.00873v1"
+          },
+          {
+            "title": "Securing the Floor and Raising the Ceiling: A Merging-based Paradigm for Multi-modal Search Agents",
+            "url": "https://arxiv.org/pdf/2603.01416v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q23",
+      "query": "Why data quality and dataset size matter differently in pretraining and reinforcement learning",
+      "target_url": "https://arxiv.org/pdf/2603.01293v1",
+      "target_title": "Theoretical Perspectives on Data Quality and Synergistic Effects in Pre- and Post-Training Reasoning Models",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5868750158697367,
+        "top_5": [
+          {
+            "title": "Theoretical Perspectives on Data Quality and Synergistic Effects in Pre- and Post-Training Reasoning Models",
+            "url": "https://arxiv.org/pdf/2603.01293v1"
+          },
+          {
+            "title": "Separators in Enhancing Autoregressive Pretraining for Vision Mamba",
+            "url": "https://arxiv.org/pdf/2603.03806v1"
+          },
+          {
+            "title": "Pretrained Vision-Language-Action Models are Surprisingly Resistant to Forgetting in Continual Learning",
+            "url": "https://arxiv.org/pdf/2603.03818v1"
+          },
+          {
+            "title": "A Multi-Dimensional Quality Scoring Framework for Decentralized LLM Inference with Proof of Quality",
+            "url": "https://arxiv.org/pdf/2603.04028v1"
+          },
+          {
+            "title": "KARL: Knowledge Agents via Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.05218v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.9035420049913228,
+        "top_5": [
+          {
+            "title": "Theoretical Perspectives on Data Quality and Synergistic Effects in Pre- and Post-Training Reasoning Models",
+            "url": "https://arxiv.org/pdf/2603.01293v1"
+          },
+          {
+            "title": "Why Does RLAIF Work At All?",
+            "url": "https://arxiv.org/pdf/2603.03000v1"
+          },
+          {
+            "title": "From Fewer Samples to Fewer Bits: Reframing Dataset Distillation as Joint Optimization of Precision and Compactness",
+            "url": "https://arxiv.org/pdf/2603.02411v1"
+          },
+          {
+            "title": "Preference Packing: Efficient Preference Optimization for Large Language Models",
+            "url": "https://arxiv.org/pdf/2602.24082v1"
+          },
+          {
+            "title": "What Does Flow Matching Bring To TD Learning?",
+            "url": "https://arxiv.org/pdf/2603.04333v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q24",
+      "query": "Separate different types of uncertainty in multi-agent models using spherical geometry",
+      "target_url": "https://arxiv.org/pdf/2603.01168v1",
+      "target_title": "SphUnc: Hyperspherical Uncertainty Decomposition and Causal Identification via Information Geometry",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5720830522477627,
+        "top_5": [
+          {
+            "title": "SphUnc: Hyperspherical Uncertainty Decomposition and Causal Identification via Information Geometry",
+            "url": "https://arxiv.org/pdf/2603.01168v1"
+          },
+          {
+            "title": "Can machines be uncertain?",
+            "url": "https://arxiv.org/pdf/2603.02365v2"
+          },
+          {
+            "title": "Evidential Neural Radiance Fields",
+            "url": "https://arxiv.org/pdf/2602.23574v1"
+          },
+          {
+            "title": "MO-MIX: Multi-Objective Multi-Agent Cooperative Decision-Making With Deep Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/2603.00730v1"
+          },
+          {
+            "title": "RewardUQ: A Unified Framework for Uncertainty-Aware Reward Models",
+            "url": "https://arxiv.org/pdf/2602.24040v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.918499976862222,
+        "top_5": [
+          {
+            "title": "SphUnc: Hyperspherical Uncertainty Decomposition and Causal Identification via Information Geometry",
+            "url": "https://arxiv.org/pdf/2603.01168v1"
+          },
+          {
+            "title": "Can machines be uncertain?",
+            "url": "https://arxiv.org/pdf/2603.02365v2"
+          },
+          {
+            "title": "Volumetric Directional Diffusion: Anchoring Uncertainty Quantification in Anatomical Consensus for Ambiguous Medical Image Segmentation",
+            "url": "https://arxiv.org/pdf/2603.04024v1"
+          },
+          {
+            "title": "What Capable Agents Must Know: Selection Theorems for Robust Decision-Making under Uncertainty",
+            "url": "https://arxiv.org/pdf/2603.02491v1"
+          },
+          {
+            "title": "Uncertainty Quantification for Multimodal Large Language Models with Incoherence-adjusted Semantic Volume",
+            "url": "https://arxiv.org/pdf/2602.24195v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q25",
+      "query": "Improve high frequency details in implicit neural representations with adaptive frequency features",
+      "target_url": "https://arxiv.org/pdf/2603.01028v1",
+      "target_title": "Content-Aware Frequency Encoding for Implicit Neural Representations with Fourier-Chebyshev Features",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5460829706862569,
+        "top_5": [
+          {
+            "title": "Content-Aware Frequency Encoding for Implicit Neural Representations with Fourier-Chebyshev Features",
+            "url": "https://arxiv.org/pdf/2603.01028v1"
+          },
+          {
+            "title": "LLMs for High-Frequency Decision-Making: Normalized Action Reward-Guided Consistency Policy Optimization",
+            "url": "https://arxiv.org/pdf/2603.02680v1"
+          },
+          {
+            "title": "Reparameterized Tensor Ring Functional Decomposition for Multi-Dimensional Data Recovery",
+            "url": "https://arxiv.org/pdf/2603.01034v1"
+          },
+          {
+            "title": "TFWaveFormer: Temporal-Frequency Collaborative Multi-level Wavelet Transformer for Dynamic Link Prediction",
+            "url": "https://arxiv.org/pdf/2603.03963v1"
+          },
+          {
+            "title": "CodecFlow: Efficient Bandwidth Extension via Conditional Flow Matching in Neural Codec Latent Space",
+            "url": "https://arxiv.org/pdf/2603.02022v2"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.933125000912696,
+        "top_5": [
+          {
+            "title": "Content-Aware Frequency Encoding for Implicit Neural Representations with Fourier-Chebyshev Features",
+            "url": "https://arxiv.org/pdf/2603.01028v1"
+          },
+          {
+            "title": "Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity",
+            "url": "https://arxiv.org/pdf/2603.03190v1"
+          },
+          {
+            "title": "Reparameterized Tensor Ring Functional Decomposition for Multi-Dimensional Data Recovery",
+            "url": "https://arxiv.org/pdf/2603.01034v1"
+          },
+          {
+            "title": "From Complex Dynamics to DynFormer: Rethinking Transformers for PDEs",
+            "url": "https://arxiv.org/pdf/2603.03112v1"
+          },
+          {
+            "title": "The Spike, the Sparse and the Sink: Anatomy of Massive Activations and Attention Sinks",
+            "url": "https://arxiv.org/pdf/2603.05498v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q26",
+      "query": "Detect hidden misaligned behavior in agents using only their visible inputs and outputs",
+      "target_url": "https://arxiv.org/pdf/2603.00829v1",
+      "target_title": "Constitutional Black-Box Monitoring for Scheming in LLM Agents",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5598340067081153,
+        "top_5": [
+          {
+            "title": "Constitutional Black-Box Monitoring for Scheming in LLM Agents",
+            "url": "https://arxiv.org/pdf/2603.00829v1"
+          },
+          {
+            "title": "Density-Guided Response Optimization: Community-Grounded Alignment via Implicit Acceptance Signals",
+            "url": "https://arxiv.org/pdf/2603.03242v1"
+          },
+          {
+            "title": "Farther the Shift, Sparser the Representation: Analyzing OOD Mechanisms in LLMs",
+            "url": "https://arxiv.org/pdf/2603.03415v1"
+          },
+          {
+            "title": "End-to-end event reconstruction for precision physics at future colliders",
+            "url": "https://arxiv.org/pdf/2603.04084v1"
+          },
+          {
+            "title": "A Case Study on Concept Induction for Neuron-Level Interpretability in CNN",
+            "url": "https://arxiv.org/pdf/2603.00197v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.8361669867299497,
+        "top_5": [
+          {
+            "title": "Constitutional Black-Box Monitoring for Scheming in LLM Agents",
+            "url": "https://arxiv.org/pdf/2603.00829v1"
+          },
+          {
+            "title": "RIVA: Leveraging LLM Agents for Reliable Configuration Drift Detection",
+            "url": "https://arxiv.org/pdf/2603.02345v1"
+          },
+          {
+            "title": "Beyond Reward: A Bounded Measure of Agent Environment Coupling",
+            "url": "https://arxiv.org/pdf/2603.01283v1"
+          },
+          {
+            "title": "AgentAssay: Token-Efficient Regression Testing for Non-Deterministic AI Agent Workflows",
+            "url": "https://arxiv.org/pdf/2603.02601v1"
+          },
+          {
+            "title": "Sleeper Cell: Injecting Latent Malice Temporal Backdoors into Tool-Using LLMs",
+            "url": "https://arxiv.org/pdf/2603.03371v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q27",
+      "query": "Hypergraph learning for dissimilar connected nodes with long range dependencies",
+      "target_url": "https://arxiv.org/pdf/2603.00599v1",
+      "target_title": "Heterophily-Agnostic Hypergraph Neural Networks with Riemannian Local Exchanger",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5424999981187284,
+        "top_5": [
+          {
+            "title": "Heterophily-Agnostic Hypergraph Neural Networks with Riemannian Local Exchanger",
+            "url": "https://arxiv.org/pdf/2603.00599v1"
+          },
+          {
+            "title": "High-order Knowledge Based Network Controllability Robustness Prediction: A Hypergraph Neural Network Approach",
+            "url": "https://arxiv.org/pdf/2603.02265v1"
+          },
+          {
+            "title": "Non-Markovian Long-Horizon Robot Manipulation via Keyframe Chaining",
+            "url": "https://arxiv.org/pdf/2603.01465v1"
+          },
+          {
+            "title": "Efficient Long-Sequence Diffusion Modeling for Symbolic Music Generation",
+            "url": "https://arxiv.org/pdf/2603.00576v1"
+          },
+          {
+            "title": "LifeBench: A Benchmark for Long-Horizon Multi-Source Memory",
+            "url": "https://arxiv.org/pdf/2603.03781v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.8494999753311276,
+        "top_5": [
+          {
+            "title": "Heterophily-Agnostic Hypergraph Neural Networks with Riemannian Local Exchanger",
+            "url": "https://arxiv.org/pdf/2603.00599v1"
+          },
+          {
+            "title": "High-order Knowledge Based Network Controllability Robustness Prediction: A Hypergraph Neural Network Approach",
+            "url": "https://arxiv.org/pdf/2603.02265v1"
+          },
+          {
+            "title": "Beyond One-Size-Fits-All: Adaptive Subgraph Denoising for Zero-Shot Graph Learning with Large Language Models",
+            "url": "https://arxiv.org/pdf/2603.02938v1"
+          },
+          {
+            "title": "Flowette: Flow Matching with Graphette Priors for Graph Generation",
+            "url": "https://arxiv.org/pdf/2602.23566v1"
+          },
+          {
+            "title": "Hierarchical Multi-Scale Graph Learning with Knowledge-Guided Attention for Whole-Slide Image Survival Analysis",
+            "url": "https://arxiv.org/pdf/2602.23557v2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q28",
+      "query": "Monitor and recover agent failures while an AI workflow is executing",
+      "target_url": "https://arxiv.org/pdf/2603.00495v1",
+      "target_title": "AI Runtime Infrastructure",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 0,
+        "reciprocal_rank_at_5": 0.0,
+        "milliseconds": 0.5109999910928309,
+        "top_5": [
+          {
+            "title": "Not All Trust is the Same: Effects of Decision Workflow and Explanations in Human-AI Decision Making",
+            "url": "https://arxiv.org/pdf/2603.05229v1"
+          },
+          {
+            "title": "Operationalizing Longitudinal Causal Discovery Under Real-World Workflow Constraints",
+            "url": "https://arxiv.org/pdf/2602.23800v1"
+          },
+          {
+            "title": "The Trilingual Triad Framework: Integrating Design, AI, and Domain Knowledge in No-code AI Smart City Course",
+            "url": "https://arxiv.org/pdf/2603.05036v1"
+          },
+          {
+            "title": "Human-Certified Module Repositories for the AI Age",
+            "url": "https://arxiv.org/pdf/2603.02512v2"
+          },
+          {
+            "title": "VANGUARD: Vehicle-Anchored Ground Sample Distance Estimation for UAVs in GPS-Denied Environments",
+            "url": "https://arxiv.org/pdf/2603.04277v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.8162499549798667,
+        "top_5": [
+          {
+            "title": "AI Runtime Infrastructure",
+            "url": "https://arxiv.org/pdf/2603.00495v1"
+          },
+          {
+            "title": "TraceSIR: A Multi-Agent Framework for Structured Analysis and Reporting of Agentic Execution Traces",
+            "url": "https://arxiv.org/pdf/2603.00623v1"
+          },
+          {
+            "title": "AgentAssay: Token-Efficient Regression Testing for Non-Deterministic AI Agent Workflows",
+            "url": "https://arxiv.org/pdf/2603.02601v1"
+          },
+          {
+            "title": "RIVA: Leveraging LLM Agents for Reliable Configuration Drift Detection",
+            "url": "https://arxiv.org/pdf/2603.02345v1"
+          },
+          {
+            "title": "DIG to Heal: Scaling General-purpose Agent Collaboration via Explainable Dynamic Decision Paths",
+            "url": "https://arxiv.org/pdf/2603.00309v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q29",
+      "query": "Do multilingual translation models represent shared concepts across languages?",
+      "target_url": "https://arxiv.org/pdf/2603.02258v1",
+      "target_title": "Universal Conceptual Structure in Neural Translation: Probing NLLB-200's Multilingual Geometry",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 0.5502499989233911,
+        "top_5": [
+          {
+            "title": "Universal Conceptual Structure in Neural Translation: Probing NLLB-200's Multilingual Geometry",
+            "url": "https://arxiv.org/pdf/2603.02258v1"
+          },
+          {
+            "title": "Optimizing Language Models for Crosslingual Knowledge Consistency",
+            "url": "https://arxiv.org/pdf/2603.04678v1"
+          },
+          {
+            "title": "Raising Bars, Not Parameters: LilMoo Compact Language Model for Hindi",
+            "url": "https://arxiv.org/pdf/2603.03508v1"
+          },
+          {
+            "title": "EstLLM: Enhancing Estonian Capabilities in Multilingual LLMs via Continued Pretraining and Post-Training",
+            "url": "https://arxiv.org/pdf/2603.02041v1"
+          },
+          {
+            "title": "Terminology Rarity Predicts Catastrophic Failure in LLM Translation of Low-Resource Ancient Languages: Evidence from Ancient Greek",
+            "url": "https://arxiv.org/pdf/2602.24119v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 3.9477499667555094,
+        "top_5": [
+          {
+            "title": "Universal Conceptual Structure in Neural Translation: Probing NLLB-200's Multilingual Geometry",
+            "url": "https://arxiv.org/pdf/2603.02258v1"
+          },
+          {
+            "title": "Optimizing Language Models for Crosslingual Knowledge Consistency",
+            "url": "https://arxiv.org/pdf/2603.04678v1"
+          },
+          {
+            "title": "Raising Bars, Not Parameters: LilMoo Compact Language Model for Hindi",
+            "url": "https://arxiv.org/pdf/2603.03508v1"
+          },
+          {
+            "title": "VL-KGE: Vision-Language Models Meet Knowledge Graph Embeddings",
+            "url": "https://arxiv.org/pdf/2603.02435v1"
+          },
+          {
+            "title": "The Lattice Representation Hypothesis of Large Language Models",
+            "url": "https://arxiv.org/pdf/2603.01227v1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q30",
+      "query": "Estimate multimodal model uncertainty from variation and inconsistency in sampled answers",
+      "target_url": "https://arxiv.org/pdf/2602.24195v1",
+      "target_title": "Uncertainty Quantification for Multimodal Large Language Models with Incoherence-adjusted Semantic Volume",
+      "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment",
+      "tfidf": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 0.5,
+        "milliseconds": 0.5475000361911952,
+        "top_5": [
+          {
+            "title": "Can machines be uncertain?",
+            "url": "https://arxiv.org/pdf/2603.02365v2"
+          },
+          {
+            "title": "Uncertainty Quantification for Multimodal Large Language Models with Incoherence-adjusted Semantic Volume",
+            "url": "https://arxiv.org/pdf/2602.24195v1"
+          },
+          {
+            "title": "Evidential Neural Radiance Fields",
+            "url": "https://arxiv.org/pdf/2602.23574v1"
+          },
+          {
+            "title": "RewardUQ: A Unified Framework for Uncertainty-Aware Reward Models",
+            "url": "https://arxiv.org/pdf/2602.24040v1"
+          },
+          {
+            "title": "Decoding Answers Before Chain-of-Thought: Evidence from Pre-CoT Probes and Activation Steering",
+            "url": "https://arxiv.org/pdf/2603.01437v1"
+          }
+        ]
+      },
+      "minilm": {
+        "hit_at_5": 1,
+        "reciprocal_rank_at_5": 1.0,
+        "milliseconds": 4.209875012747943,
+        "top_5": [
+          {
+            "title": "Uncertainty Quantification for Multimodal Large Language Models with Incoherence-adjusted Semantic Volume",
+            "url": "https://arxiv.org/pdf/2602.24195v1"
+          },
+          {
+            "title": "Induced Numerical Instability: Hidden Costs in Multimodal Large Language Models",
+            "url": "https://arxiv.org/pdf/2603.04453v1"
+          },
+          {
+            "title": "Evidential Neural Radiance Fields",
+            "url": "https://arxiv.org/pdf/2602.23574v1"
+          },
+          {
+            "title": "MMR-Life: Piecing Together Real-life Scenes for Multimodal Multi-image Reasoning",
+            "url": "https://arxiv.org/pdf/2603.02024v1"
+          },
+          {
+            "title": "Distributed Partial Information Puzzles: Examining Common Ground Construction Under Epistemic Asymmetry",
+            "url": "https://arxiv.org/pdf/2603.05450v1"
+          }
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "Queries derived from target abstracts; selection bias and lexical overlap expected.",
+    "One known target per query; other returned papers may also be relevant.",
+    "No independent human labels, held-out test set, confidence intervals or production latency claims.",
+    "Local query timings include encoding but exclude HTTP, cold start and corpus preparation."
+  ]
+}
