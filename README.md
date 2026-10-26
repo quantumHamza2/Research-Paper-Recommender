@@ -1,110 +1,69 @@
-# 📚 Research Paper Recommender
+# Research Explorer
 
-A full-stack machine learning system that recommends research papers using semantic similarity and vector search.
+Search, inspect and compare research-paper abstracts with a React interface and Python API. The project combines MiniLM embeddings, exact FAISS retrieval, a similarity graph and a two-dimensional topic map.
 
----
+**Status:** local prototype. Public hosting is not verified. The default fallback corpus is the first 1,000 records; optional local generation is not required for search or extractive comparison.
 
-## 🚀 Overview
+## Evidence you can inspect
 
-This project builds an intelligent research paper recommendation system using:
+- [Retrieval diagnostic and limitations](evaluation/REPORT.md): 30 agent-authored known-item queries, a TF-IDF baseline, per-query rankings and reproducible output. This is not independently judged recommendation accuracy.
+- [Code walkthrough and 90-second demo](docs/INTERVIEW_WALKTHROUGH.md): exact functions, explanations and debugging exercises.
+- [API regression tests](tests/test_api_contract.py): bounded requests, data preservation, whitespace validation, ranked topic labels, model discovery and actual fallback behavior.
 
-* Natural Language Processing (NLP)
-* Embeddings for semantic understanding
-* FAISS for fast similarity search
-* A React frontend for visualization
+## Quick start
 
-Users can search for research topics and receive relevant papers based on semantic meaning rather than simple keyword matching.
-
----
-
-## 🧠 Pipeline
-
-1. **Data Collection**
-
-   * Fetch research papers from arXiv (`fetch_arxiv.py`)
-
-2. **Data Cleaning**
-
-   * Preprocess and clean raw data (`clean_dataset.py`)
-
-3. **Embedding Generation**
-
-   * Convert papers into vector embeddings (`generate_embeddings.py`)
-
-4. **Indexing**
-
-   * Store embeddings using FAISS (`build_faiss_index.py`)
-
-5. **Search & Recommendation**
-
-   * Semantic search (`semantic_search.py`)
-   * Recommendations (`recommend_papers.py`)
-
-6. **Backend API**
-
-   * Serve results via API (`backend_api.py`)
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-
-* Python
-* FAISS
-* NumPy
-* Pandas
-
-### Frontend
-
-* React
-* Vite
-* JavaScript
-
----
-
-## ⚙️ Setup
+Use Python 3.11–3.13 and a current Node version supported by the frontend's Vite dependency. From the repository root:
 
 ```bash
-git clone https://github.com/quantumHamza2/Research-Paper-Recommender.git
-cd Research-Paper-Recommender
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn backend_api:app --host 127.0.0.1 --port 8000
 ```
 
----
+In another terminal:
 
-## 🔍 Features
+```bash
+cd frontend
+npm ci
+npm run dev -- --host 127.0.0.1
+```
 
-* Semantic search using embeddings
-* Fast similarity search with FAISS
-* Research topic discovery
-* Interactive frontend
+Open the local URL printed by Vite. Leave both processes running. First startup downloads `all-MiniLM-L6-v2` if not cached, encodes a sample and builds the map. `http://127.0.0.1:8000/` reports readiness. A running HTTP server alone does not mean the index is ready. If the numerical runtime crashes on macOS, restart with `OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 TOKENIZERS_PARALLELISM=false` before the uvicorn command.
 
----
+## How it works
 
-## 👨‍💻 Author
+1. The checked-in CSV contains arXiv metadata. `fetch_arxiv.py` and `clean_dataset.py` support collection/preparation.
+2. `build_sample_indices` combines title and abstract, encodes them with MiniLM, normalizes vectors and builds FAISS `IndexFlatIP` in memory. It does not replace the full CSV or saved artifacts.
+3. `/search` encodes and normalizes a query and maps ranked vector IDs back to paper metadata. It searches this corpus, not the live web.
+4. `/paper/{id}` returns abstract, authors, categories and original source link. IDs are corpus row positions.
+5. `/graph` diversifies up to 200 candidates using maximum marginal relevance (weight 0.5) and draws edges above cosine similarity 0.55. Edges represent textual similarity, not citations.
+6. `/map` shows UMAP coordinates; HDBSCAN groups those projected points. Cluster -1 denotes noise/unassigned papers. Labels use ranked mean TF-IDF weights. Projection and labels are approximate discovery aids.
+7. `/synthesize` defaults to TF-IDF keywords and extracted sentences. Optional Ollama receives only selected abstracts; unavailable or empty generation produces an extractive response with a warning and source labels.
 
-Mohammad Hamza Khan
+## Optional local model
 
-## Frontend and demo behavior
+Start Ollama separately and install a model you can run. `/synthesis-status` discovers installed models and prefers `qwen2.5:1.5b`. Generated comparisons can contain unsupported claims or missing citations; inspect the abstracts. This is not full-PDF analysis or a verified literature review.
 
-In another terminal: `cd frontend && npm ci && npm run dev`.
-Start the API from the repository root so it can find the CSV files. First startup downloads `all-MiniLM-L6-v2` and builds a 1,000-paper sample if full artifacts are missing. Allow time for this step and check `/` for readiness. Sample mode stays in memory and preserves the full CSV and saved indexes. Retrieval normalizes both document and query embeddings and uses cosine similarity (FAISS inner product).
+## Verification
 
-The default comparison extracts TF-IDF keywords and sentences; it is not an LLM and its overlap score measures shared vocabulary, not scientific agreement. Optional local generation discovers installed Ollama models through `/synthesis-status`, prefers `qwen2.5:1.5b` when available, and sends only the selected abstracts to the chosen model. Start `ollama serve` before opening the interface, then refresh the page if model discovery was unavailable. The modal distinguishes actual output modes and links each source. A failed, empty or timed-out model response produces a real extractive fallback with a visible warning.
+```bash
+pip install httpx
+python -m unittest discover -s tests
+npm run build --prefix frontend
+```
 
-Local model output is a draft that can still contain unsupported claims, omit citations or be cut short. Check it against the abstracts; it is not a verified literature review or full-paper analysis. No retrieval-quality benchmark has been established yet.
+The 15 unit tests use encoder/FAISS stand-ins for API checks, and do not prove real-model retrieval quality. The separate [diagnostic runner](evaluate_retrieval.py) uses the real cached MiniLM encoder and FAISS against 1,000 corpus records. See its report for reproduction and the recorded results; no independent human relevance benchmark exists yet.
 
-`/rebuild_index` is disabled by default. Set `ENABLE_INDEX_REBUILD=1` only for a trusted local instance; it is an expensive operation that rewrites generated full-index artifacts. Do not expose that instance publicly. Back up full artifacts before rebuilding. Only load locally generated, trusted NumPy neighbor artifacts (the existing format uses pickle).
+## Limits and safe defaults
 
-## Checks
+- Exact search, pairwise graph comparisons and a 1,000-record sample have not been validated at production scale.
+- UMAP distance is not a scientific similarity measurement; abstract vocabulary overlap does not establish methodological agreement.
+- Out-of-corpus queries can still receive nearest neighbors. There is no calibrated abstention threshold.
+- `/rebuild_index` is disabled by default. Enable only in a trusted local instance with `ENABLE_INDEX_REBUILD=1`; full rebuild writes remain non-atomic.
+- Only load trusted locally generated neighbor artifacts: the legacy NumPy format uses pickle.
+- Corpus-derived evaluation queries favor known-item lookup. They are not held-out research tasks or user satisfaction evidence.
 
-Run `python -m unittest discover -s tests` with FastAPI, httpx, requests, NumPy, pandas and scikit-learn installed. Tests use stand-ins for the encoder, FAISS and clustering to check request limits and sample-data preservation without downloading models. Full retrieval/model integration is not covered by these checks.
+## Author and development
 
-
-## Local integration check (12 October 2026)
-
-On macOS, the real MiniLM encoder, normalized FAISS index, UMAP and HDBSCAN loaded a 1,000-paper sample. Two search queries each returned five results; paper details, a 1,000-node map and a 10-node graph responded successfully. Both extractive and local Ollama synthesis returned their reported modes with two source labels. The tested local models were `qwen2.5:1.5b` and `qwen2.5:7b`; this is a functional smoke check, not an accuracy or performance benchmark. Larger local models may approach the two-minute request timeout.
-
-The 11 automated tests cover input limits, data preservation, duplicate selections, model discovery, and actual extractive fallback after mocked Ollama failures. The frontend production build passes. Manual browser verification covers search, selecting papers and comparing abstracts. Full-index rebuilding and deployment remain unverified.
+Mohammad Hamza Khan. Developed with AI-assisted coding, testing and documentation. The evaluation queries were authored by the coding assistant and have not received independent human relevance review. See repository history for changes; no production impact or deployment is claimed.

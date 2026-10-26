@@ -121,3 +121,20 @@ class SamplePreservationTests(unittest.TestCase):
                 self.assertEqual(len(backend_api.df),20)
                 np.testing.assert_allclose(np.linalg.norm(backend_api.index.values,axis=1),1,rtol=1e-6)
             finally: os.chdir(original_cwd)
+
+
+class SearchAndLabelRegressionTests(unittest.TestCase):
+    def test_whitespace_rejected_without_encoder(self):
+        with patch.object(backend_api, 'model') as encoder:
+            client = TestClient(backend_api.app)
+            for endpoint in ('/search', '/graph'):
+                self.assertEqual(client.get(endpoint, params={'query': ' \t\n'}).status_code, 422)
+            encoder.encode.assert_not_called()
+
+    def test_cluster_labels_rank_weight_not_alphabet(self):
+        import pandas as pd
+        import numpy as np
+        papers = pd.DataFrame({'abstract': ['zebra zebra zebra apple banana carrot']})
+        with patch.object(backend_api, 'df', papers), patch.object(backend_api, 'paper_clusters', np.array([0])):
+            backend_api.compute_cluster_keywords()
+            self.assertEqual(backend_api.cluster_keywords[0].split(', ')[0], 'zebra')

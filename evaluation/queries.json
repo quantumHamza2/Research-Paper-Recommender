@@ -1,0 +1,212 @@
+[
+  {
+    "id": "q01",
+    "query": "Collect robot training demonstrations with a smartphone without running a physical robot",
+    "target_url": "https://arxiv.org/pdf/2603.05504v1",
+    "target_title": "RoboPocket: Improve Robot Policies Instantly with Your Phone",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q02",
+    "query": "A human annotated dataset linking screenshots webpage structure and browser actions",
+    "target_url": "https://arxiv.org/pdf/2603.05295v1",
+    "target_title": "WebChain: A Large-Scale Human-Annotated Dataset of Real-World Web Interaction Traces",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q03",
+    "query": "Reduce communication costs in federated learning by sending only blocks of parameters",
+    "target_url": "https://arxiv.org/pdf/2603.05116v1",
+    "target_title": "FedBCD:Communication-Efficient Accelerated Block Coordinate Gradient Descent for Federated Learning",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q04",
+    "query": "Combine human bidding rules with sequence models for online advertising decisions",
+    "target_url": "https://arxiv.org/pdf/2603.04920v1",
+    "target_title": "Knowledge-informed Bidding with Dual-process Control for Online Advertising",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q05",
+    "query": "Compare traditional and deep learning methods for segmenting brain gliomas in MRI",
+    "target_url": "https://arxiv.org/pdf/2603.04796v1",
+    "target_title": "Comparative Evaluation of Traditional Methods and Deep Learning for Brain Glioma Imaging. Review Paper",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q06",
+    "query": "Financial question answering with typed numerical facts and checks on computation traces",
+    "target_url": "https://arxiv.org/pdf/2603.04663v1",
+    "target_title": "Neuro-Symbolic Financial Reasoning via Deterministic Fact Ledgers and Adversarial Low-Latency Hallucination Detector",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q07",
+    "query": "Why iterative flow models improve temporal difference value estimation",
+    "target_url": "https://arxiv.org/pdf/2603.04333v1",
+    "target_title": "What Does Flow Matching Bring To TD Learning?",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q08",
+    "query": "Does reinforcement learning with correct physics answers generalize to different beam supports?",
+    "target_url": "https://arxiv.org/pdf/2603.04124v1",
+    "target_title": "BeamPERL: Parameter-Efficient RL with Verifiable Rewards Specializes Compact LLMs for Structured Beam Mechanics Reasoning",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q09",
+    "query": "Which offline reinforcement learning approach handles noisy wireless network control?",
+    "target_url": "https://arxiv.org/pdf/2603.03932v1",
+    "target_title": "Selecting Offline Reinforcement Learning Algorithms for Stochastic Network Control",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q10",
+    "query": "Coordinate a humanoid robot and a person carrying objects together",
+    "target_url": "https://arxiv.org/pdf/2603.03768v1",
+    "target_title": "Cognition to Control - Multi-Agent Learning for Human-Humanoid Collaborative Transport",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q11",
+    "query": "Threat modeling and risk prioritization for language models used in healthcare",
+    "target_url": "https://arxiv.org/pdf/2603.03633v1",
+    "target_title": "Goal-Driven Risk Assessment for LLM-Powered Systems: A Healthcare Case Study",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q12",
+    "query": "How hidden representations change when language models face harder unfamiliar questions",
+    "target_url": "https://arxiv.org/pdf/2603.03415v1",
+    "target_title": "Farther the Shift, Sparser the Representation: Analyzing OOD Mechanisms in LLMs",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q13",
+    "query": "Detect fraud on graphs using transformers and neighborhoods at different scales",
+    "target_url": "https://arxiv.org/pdf/2603.03106v1",
+    "target_title": "Multi-Scale Adaptive Neighborhood Awareness Transformer For Graph Fraud Detection",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q14",
+    "query": "Predict ship movement with language models trained using reinforcement learning",
+    "target_url": "https://arxiv.org/pdf/2603.02939v1",
+    "target_title": "ShipTraj-R1: Reinforcing Ship Trajectory Prediction in Large Language Models via Group Relative Policy Optimization",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q15",
+    "query": "Adapt visual features to the question rather than using a fixed image representation",
+    "target_url": "https://arxiv.org/pdf/2603.02748v1",
+    "target_title": "iGVLM: Dynamic Instruction-Guided Vision Encoding for Question-Aware Multimodal Understanding",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q16",
+    "query": "Reduce confusion between similar image classes using learned text prompts",
+    "target_url": "https://arxiv.org/pdf/2603.02557v1",
+    "target_title": "CAPT: Confusion-Aware Prompt Tuning for Reducing Vision-Language Misalignment",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q17",
+    "query": "Write stories by moving virtual characters and objects in mixed reality",
+    "target_url": "https://arxiv.org/pdf/2603.02366v1",
+    "target_title": "PlayWrite: A Multimodal System for AI Supported Narrative Co-Authoring Through Play in XR",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q18",
+    "query": "How quickly does gradient descent improve robustness margins in a small ReLU network?",
+    "target_url": "https://arxiv.org/pdf/2603.02095v1",
+    "target_title": "On the Rate of Convergence of GD in Non-linear Neural Networks: An Adversarial Robustness Perspective",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q19",
+    "query": "Compare human judgments with automated measures of topic model quality",
+    "target_url": "https://arxiv.org/pdf/2603.01945v1",
+    "target_title": "When Numbers Tell Half the Story: Human-Metric Alignment in Topic Model Evaluation",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q20",
+    "query": "Use images and explicit shape representations to control flexible continuum robots",
+    "target_url": "https://arxiv.org/pdf/2603.01751v1",
+    "target_title": "Shape-Interpretable Visual Self-Modeling Enables Geometry-Aware Continuum Robot Control",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q21",
+    "query": "Detect camouflaged objects by separating brightness from color information",
+    "target_url": "https://arxiv.org/pdf/2603.01602v1",
+    "target_title": "YCDa: YCbCr Decoupled Attention for Real-time Realistic Camouflaged Object Detection",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q22",
+    "query": "Search for protein information using sequences and repeated multimodal agent actions",
+    "target_url": "https://arxiv.org/pdf/2603.01464v1",
+    "target_title": "ProtRLSearch: A Multi-Round Multimodal Protein Search Agent with Large Language Models Trained via Reinforcement Learning",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q23",
+    "query": "Why data quality and dataset size matter differently in pretraining and reinforcement learning",
+    "target_url": "https://arxiv.org/pdf/2603.01293v1",
+    "target_title": "Theoretical Perspectives on Data Quality and Synergistic Effects in Pre- and Post-Training Reasoning Models",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q24",
+    "query": "Separate different types of uncertainty in multi-agent models using spherical geometry",
+    "target_url": "https://arxiv.org/pdf/2603.01168v1",
+    "target_title": "SphUnc: Hyperspherical Uncertainty Decomposition and Causal Identification via Information Geometry",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q25",
+    "query": "Improve high frequency details in implicit neural representations with adaptive frequency features",
+    "target_url": "https://arxiv.org/pdf/2603.01028v1",
+    "target_title": "Content-Aware Frequency Encoding for Implicit Neural Representations with Fourier-Chebyshev Features",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q26",
+    "query": "Detect hidden misaligned behavior in agents using only their visible inputs and outputs",
+    "target_url": "https://arxiv.org/pdf/2603.00829v1",
+    "target_title": "Constitutional Black-Box Monitoring for Scheming in LLM Agents",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q27",
+    "query": "Hypergraph learning for dissimilar connected nodes with long range dependencies",
+    "target_url": "https://arxiv.org/pdf/2603.00599v1",
+    "target_title": "Heterophily-Agnostic Hypergraph Neural Networks with Riemannian Local Exchanger",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q28",
+    "query": "Monitor and recover agent failures while an AI workflow is executing",
+    "target_url": "https://arxiv.org/pdf/2603.00495v1",
+    "target_title": "AI Runtime Infrastructure",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q29",
+    "query": "Do multilingual translation models represent shared concepts across languages?",
+    "target_url": "https://arxiv.org/pdf/2603.02258v1",
+    "target_title": "Universal Conceptual Structure in Neural Translation: Probing NLLB-200's Multilingual Geometry",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  },
+  {
+    "id": "q30",
+    "query": "Estimate multimodal model uncertainty from variation and inconsistency in sampled answers",
+    "target_url": "https://arxiv.org/pdf/2602.24195v1",
+    "target_title": "Uncertainty Quantification for Multimodal Large Language Models with Incoherence-adjusted Semantic Volume",
+    "label_provenance": "Agent-authored query after inspecting corpus title/abstract; not independent human judgment"
+  }
+]

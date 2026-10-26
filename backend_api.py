@@ -81,12 +81,14 @@ def compute_cluster_keywords():
             continue
         try:
             vectorizer = TfidfVectorizer(max_features=12, stop_words="english")
-            vectorizer.fit(abstracts)
+            matrix = vectorizer.fit_transform(abstracts)
             features = vectorizer.get_feature_names_out()
-            clean_features = [f for f in features if f.isalpha() and len(f) > 3]
+            scores = np.asarray(matrix.mean(axis=0)).ravel()
+            ranked = sorted(range(len(features)), key=lambda i: (-scores[i], features[i]))
+            clean_features = [features[i] for i in ranked if features[i].isalpha() and len(features[i]) > 3]
             kw = clean_features[:3]
             if not kw:
-                kw = list(features)[:3]
+                kw = [features[i] for i in ranked[:3]]
             cluster_keywords[c_id] = ", ".join(kw)
         except Exception as e:
             print(f"Error computing keywords for cluster {c_id}: {e}")
@@ -273,6 +275,9 @@ def get_paper(paper_id: int):
 # -------- SEARCH --------
 @app.get("/search")
 def search(query: str = Query(..., min_length=1, max_length=1000), k: int = Query(10, ge=1, le=100)):
+    query = query.strip()
+    if not query:
+        raise HTTPException(status_code=422, detail="Query must contain non-whitespace characters")
     if index is None or df is None:
         raise HTTPException(status_code=503, detail="System indexing or loading")
         
@@ -299,6 +304,9 @@ def search(query: str = Query(..., min_length=1, max_length=1000), k: int = Quer
 # -------- GRAPH WITH MMR DIVERSIFICATION --------
 @app.get("/graph")
 def graph(query: str = Query(..., min_length=1, max_length=1000), k: int = Query(40, ge=1, le=100)):
+    query = query.strip()
+    if not query:
+        raise HTTPException(status_code=422, detail="Query must contain non-whitespace characters")
     if index is None or df is None or embeddings is None:
         raise HTTPException(status_code=503, detail="System loading")
 
@@ -400,6 +408,8 @@ def get_research_map(limit: int = Query(5000, ge=1, le=10000)):
 # -------- SYNTHESIS API --------
 @app.get("/synthesis-status")
 def synthesis_status():
+    if os.environ.get("ENABLE_OLLAMA", "1") == "0":
+        return {"models": [], "default_model": None}
     try:
         response = requests.get("http://127.0.0.1:11434/api/tags", timeout=2)
         response.raise_for_status()
@@ -416,6 +426,8 @@ class SynthesizeRequest(BaseModel):
 
 @app.post("/synthesize")
 def synthesize(req: SynthesizeRequest):
+    if req.use_ollama and os.environ.get("ENABLE_OLLAMA", "1") == "0":
+        raise HTTPException(status_code=400, detail="Local LLM generation is disabled on this public demo. Use extractive comparison.")
     if df is None:
         raise HTTPException(status_code=503, detail="System initializing")
         
